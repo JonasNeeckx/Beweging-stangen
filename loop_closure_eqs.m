@@ -12,7 +12,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function F=loop_closure_eqs(phi_init,phi1,r2,r3,r4,r5,r6,r7,r9,r10,r11,gamma,r14x,r14y,r47y,r18x,r18y,r811y)
+function F=loop_closure_eqs(phi_init,phi1,r2,r3,r4,r5,r6,r7,~,r9,r10,r11,gamma,r14x,r14y,r47y,r18x,r18y,r811y)
 
 % first argument: the initial values of the unknown angles phi3 and phi4
 % argument phi2: input angle phi2 for which we want to calculate the unknown angles phi3 and phi4

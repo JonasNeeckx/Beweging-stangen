@@ -30,6 +30,7 @@ r4 = 0.0035;
 r5 = 0.00800;
 r6 = 0.0045;
 r7 = 0.00800;
+r8 = 0.0035;
 r9 = 0.008;
 r10 = 0.0045;
 r11 = 0.008;
@@ -115,7 +116,7 @@ dphi1=omega*A*cos(omega*t);
 ddphi1=-omega^2*A*sin(omega*t);
 
 % calculation of the kinematics (see kin_4bar.m)
-[phi2,phi3,phi4,phi5,phi6,phi8,phi9,phi10,phi11,dphi2,dphi3,dphi4,dphi5,dphi6,dphi8,dphi9,dphi10,dphi11,ddphi2,ddphi3,ddphi4,ddphi5,ddphi6,ddphi8,ddphi9,ddphi10,ddphi11] = kinematics_4bar(r2,r3,r4,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi1,dphi1,ddphi1,phi2_init,phi3_init,phi4_init,phi5_init,phi6_init,phi8_init,phi9_init,phi10_init,phi11_init,r8_init,t,fig_kin_4bar);
+[phi2,phi3,phi4,phi5,phi6,phi8,phi9,phi10,phi11,dphi2,dphi3,dphi4,dphi5,dphi6,dphi8,dphi9,dphi10,dphi11,ddphi2,ddphi3,ddphi4,ddphi5,ddphi6,ddphi8,ddphi9,ddphi10,ddphi11] = kinematics_4bar(r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi1,dphi1,ddphi1,phi2_init,phi3_init,phi4_init,phi5_init,phi6_init,phi8_init,phi9_init,phi10_init,phi11_init,r8_init,t,fig_kin_4bar);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
