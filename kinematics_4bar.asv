@@ -15,15 +15,15 @@ function [phi2,phi3,phi4,phi5,phi6,phi8,phi9,phi10,phi11,dphi2,dphi3,dphi4,dphi5
 
 % allocation of the result vectors (this results in better performance because we don't have to reallocate and
 % copy the vector each time we add an element.
-phi2 = zeros(t);
-phi3 = zeros(t);
-phi4 = zeros(t);
-phi5 = zeros(t);
-phi6 = zeros(t);
-phi8 = zeros(t);
-phi9 = zeros(t);
-phi10 = zeros(t);
-phi11 = zeros(t);
+phi2 = zeros(size(t));
+phi3 = zeros(size(t));
+phi4 = zeros(size(t));
+phi5 = zeros(size(t));
+phi6 = zeros(size(t));
+phi8 = zeros(size(t));
+phi9 = zeros(size(t));
+phi10 = zeros(size(t));
+phi11 = zeros(size(t));
 dphi2 = zeros(size(t));
 dphi3 = zeros(size(t));
 dphi4 = zeros(size(t));
@@ -93,12 +93,12 @@ for k=1:t_size
         0                0                     0                0                 r9*cos(phi8(k)+gamma) r10*cos(phi10(k)) -r11*cos(phi11(k));
         0                0                     0                0                 r9*sin(phi8(k)+gamma) r10*sin(phi10(k))  r11*sin(phi11(k))];
     
-    B = [r2*cos(phi1)*dphi1;
-        r2*sin(phi1)*dphi1;
+    B = [r2*cos(phi1(k))*dphi1(k);
+        r2*sin(phi1(k))*dphi1(k);
         0;
         0;
-        r2*cos(phi1)*dphi1;
-        r2*sin(phi1)*dphi1;
+        r2*cos(phi1(k))*dphi1(k);
+        r2*sin(phi1(k))*dphi1(k);
         0;
         0];
      
@@ -167,7 +167,7 @@ end % loop over positions
 
 % *** create movie ***
 
-% point P = fixed
+% point P = fixedµµµµµµµµppppp^^àpççççççççççç
 P = 0;
 % point S = fixed
 S = r1*exp(j*phi1);
