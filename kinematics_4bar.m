@@ -62,7 +62,7 @@ for k=1:t_size
     gamma = pi/4;
     [x, fval, exitflag]=fsolve('loop_closure_eqs',[phi2_init phi3_init phi5_init phi6_init phi8_init phi10_init phi11_init r8_init]',optim_options,phi1(k),r2,r3,r4,r5,r6,r7,r9,r10,r11,gamma,r14x,r14y,r47y,r18x,r18y,r811y);
     if (exitflag ~= 1)
-        display 'The fsolve exit flag was not 1, probably no convergence!'
+        DISP 'The fsolve exit flag was not 1, probably no convergence!'
         exitflag
     end
     
@@ -86,7 +86,8 @@ for k=1:t_size
         r3*cos(phi2(k)), 0, 0, 0, r8(k)*cos(phi8(k)), 0, 0, cos(phi8(k));
         r3*sin(phi2(k)), 0, 0, 0, r8(k)*sin(phi8(k)), 0, 0, sin(phi8(k));
         0, 0, 0, 0, r9*cos(phi8(k)+gamma), r10*cos(phi10(k)), -r11*cos(phi11(k)), 0;
-        0, 0, 0, 0, r9*sin(phi8(k)+gamma), r10*sin(phi10(k)),  r11*sin(phi11(k)), 0];
+        0, 0, 0, 0, r9*sin(phi8(k)+gamma), r10*sin(phi10(k)),  r11*sin(phi11(k)), 0]
+    display A;
     
     B = [-r2*cos(phi1(k))*dphi1(k);
         -r2*sin(phi1(k))*dphi1(k);
@@ -95,10 +96,11 @@ for k=1:t_size
         -r2*cos(phi1(k))*dphi1(k);
         -r2*sin(phi1(k))*dphi1(k);
         0;
-        0];
+        0]
+    display B;
      
-    x = A\B;
-   
+    x = A\B
+    display x[8];
     % save results
     dphi2(k)=x(1);
     dphi3(k)=x(2);
@@ -120,17 +122,18 @@ for k=1:t_size
         r3*cos(phi2(k)), 0, 0, 0, r8(k)*cos(phi8(k)), 0, 0, cos(phi8(k));
         r3*sin(phi2(k)), 0, 0, 0, r8(k)*sin(phi8(k)), 0, 0, sin(phi8(k));
         0, 0, 0, 0, r9*cos(phi8(k)+gamma), r10*cos(phi10(k)), -r11*cos(phi11(k)), 0;
-        0, 0, 0, 0, r9*sin(phi8(k)+gamma), r10*sin(phi10(k)),  r11*sin(phi11(k)), 0];
+        0, 0, 0, 0, r9*sin(phi8(k)+gamma), r10*sin(phi10(k)),  r11*sin(phi11(k)), 0]
     
-      B = [-r2*sin(phi1(k))*dphi1(k)^2+r2*cos(phi1)*ddphi1(k)-r3*sin(phi2(k))*dphi2(k)^2-r4*sin(phi3(k))*dphi3(k)^2;
-        r2*cos(phi1(k))*dphi1(k)^2 + r2*sin(phi1(k))*ddphi1(k)+r3*cos(phi2(k))*dphi2(k)^2+r4*cos(phi3(k))*dphi3(k)^2;
-        -r5*sin(phi3(k)-gamma)*dphi3(k)^2-r6*sin(phi5(k))*dphi5(k)^2+r7*sin(phi6(k))*dphi6(k)^2;
-        r5*cos(phi3(k)-gamma)*dphi3(k)^2+r6*cos(phi5(k))*dphi5(k)^2-r7*cos(phi6(k))*dphi6(k)^2;
-        -r2*sin(phi1(k))*dphi1(k)^2 + r2*cos(phi1(k))*ddphi1(k)-r3*sin(phi2(k))*dphi2(k)-r8*sin(phi8(k))*dphi8(k)^2;
-        r2*cos(phi1(k))*dphi1(k)^2 + r2*sin(phi1(k))*ddphi1(k)+r3*cos(phi2(k))*dphi2(k)^2+r8*cos(phi8(k))*dphi8(k)^2; 
-        -r9*sin(phi8(k)+gamma)*dphi8(k)^2-r10*sin(phi10(k))*dphi10(k)^2+r11*sin(phi11(k))*dphi11(k)^2;
-        r9*cos(phi8(k)+gamma)*phi8(k)^2+r10*cos(phi10(k))*dphi10(k)^2+r11*cos(phi11(k))*dphi11(k)^2];
-    
+      B = [r2*sin(phi1(k))*dphi1(k)^2+r2*cos(phi1(k))*ddphi1(k)+r3*sin(phi2(k))*dphi2(k)^2+r4*sin(phi3(k))*dphi3(k)^2;
+        -r2*cos(phi1(k))*dphi1(k)^2+r2*sin(phi1(k))*ddphi1(k)-r3*cos(phi2(k))*dphi2(k)^2-r4*cos(phi3(k))*dphi3(k)^2;
+        r5*sin(phi3(k)-gamma)*dphi3(k)^2+r6*sin(phi5(k))*dphi5(k)^2-r7*sin(phi6(k))*dphi6(k)^2;
+        -r5*cos(phi3(k)-gamma)*dphi3(k)^2-r6*cos(phi5(k))*dphi5(k)^2+r7*cos(phi6(k))*dphi6(k)^2;
+        r2*sin(phi1(k))*dphi1(k)^2+r2*cos(phi1(k))*ddphi1(k)+r3*sin(phi2(k))*dphi2(k)+r8*sin(phi8(k))*dphi8(k)^2;
+        -r2*cos(phi1(k))*dphi1(k)^2+r2*sin(phi1(k))*ddphi1(k)-r3*cos(phi2(k))*dphi2(k)^2-r8*cos(phi8(k))*dphi8(k)^2; 
+        r9*sin(phi8(k)+gamma)*dphi8(k)^2+r10*sin(phi10(k))*dphi10(k)^2-r11*sin(phi11(k))*dphi11(k)^2;
+        -r9*cos(phi8(k)+gamma)*dphi8(k)^2-r10*cos(phi10(k))*dphi10(k)^2-r11*cos(phi11(k))*dphi11(k)^2]
+    display A
+    display B
     x = A\B;
     % save results
     ddphi2(k)=x(1);

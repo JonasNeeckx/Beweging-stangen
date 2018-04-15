@@ -40,7 +40,6 @@ r18x = 0.0035;
 r18y = 0.00691;
 r811y = 0.0045;
 
-
 % dynamic parameters, defined in a local frame on each of the bars.
 X2 = r2/2;               % X coordinates of cog (centre of gravity)
 X3 = r3/3;
@@ -103,10 +102,10 @@ t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
 omega = 0.5;                   % omega = 145
-A = 1;
-phi1=1+A*sin(omega*t);
-dphi1=omega*A*cos(omega*t);
-ddphi1=-omega^2*A*sin(omega*t);
+phi1=omega*t+(60*pi/180);
+tijdsvec = size(t);
+dphi1=ones(tijdsvec(1),1).*omega; % ten allen tijde omega
+ddphi1=zeros(tijdsvec(1),1); % ten allen tijde nul
 
 % calculation of the kinematics (see kin_4bar.m)
 [phi2,phi3,phi5,phi6,phi8,phi10,phi11,dphi2,dphi3,dphi5,dphi6,dphi8,dphi10,dphi11,ddphi2,ddphi3,ddphi5,ddphi6,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8] = kinematics_4bar(r2,r3,r4,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi1,dphi1,ddphi1,phi2_init,phi3_init,phi5_init,phi6_init,phi8_init,phi10_init,phi11_init,r8_init,t,fig_kin_4bar);
