@@ -34,10 +34,10 @@ r10 = 0.0045;
 r11 = 0.008;
 r14y = 0.00691;
 r14x = 0.0035;
-r47y = 0.0045;
+r47y = 0.0035;
 r18x = 0.0035;
 r18y = 0.00691;
-r811y = 0.0045;
+r811y = 0.0035;
 
 % dynamic parameters, defined in a local frame on each of the bars.
 X2 = r2/2;               % X coordinates of cog (centre of gravity)
@@ -81,14 +81,14 @@ J11 = m9*r9^2/12;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % position analysis
-phi2_init = 260*pi/180;
+phi2_init = 241*pi/180;
 phi3_init = 0;    % initial condition for first step of position analysis with fsolve (phi3 and phi4)
 phi5_init = 90*pi/180;  % VERY IMPORTANT because it determines which branch of the mechanism you're in
-phi6_init = 105*pi/180;
+phi6_init = 210*pi/180;
 phi8_init = pi;
 phi10_init = 90*pi/180;
-phi11_init = 335*pi/180;
-r13_init = 0.0069;
+phi11_init = 330*pi/180;
+r13_init = 0.00691;
 r4_init = 0.0035;
 r8_init = 0.0035; 
 
@@ -99,7 +99,7 @@ t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
 omega = 0.5;                   % omega = 145
-phi1=omega*t+(60*pi/180);
+phi1=omega*t+(359*pi/180);
 tijdsvec = size(t);
 dphi1=ones(tijdsvec(1),1).*omega; % ten allen tijde omega
 ddphi1=zeros(tijdsvec(1),1); % ten allen tijde nul

@@ -49,7 +49,7 @@ ddr8 = zeros(size(t));
 phi4 = zeros(size(t));
 phi9 = zeros(size(t));
 % fsolve options (help fsolve, help optimset)
-optim_options = optimset('Display','off');
+optim_options = optimset('Display','off','TolFun',1e-11,'TolX',eps,'MaxIter',400);
 
 % *** loop over positions ***
 Ts = t(2) - t(1);      % timestep
@@ -67,7 +67,7 @@ for k=1:t_size
     % argument a1 ... phi1: constants
     % return value x: solution for the unknown angles phi3 and phi4
     % return exitflag: indicates convergence of algorithm
-    gamma = 7*pi/4;
+    gamma = 330*pi/180;
     [x, fval, exitflag]=fsolve('loop_closure_eqs',[phi2_init phi3_init phi5_init phi6_init phi8_init phi10_init phi11_init r13_init r4_init r8_init]',optim_options,phi1(k),r2,r3,r5,r6,r7,r9,r10,r11,gamma,r14x,r14y,r47y,r18x,r18y,r811y);
     if (exitflag ~= 1)
         display 'The fsolve exit flag was not 1, probably no convergence!'
@@ -179,13 +179,14 @@ end % loop over positions
 % point P = fixed
 A = 0;
 % point S = fixed
-D = -0.007746*exp(j*63.14*pi/180);
-G = -0.010983*exp(j*71.4166*pi/180);
-H = -0.007746*exp(j*63.14*pi/180);
-K = -0.010983*exp(j*71.4166*pi/180);
+D = A -0.007746*exp(j*63.14*pi/180);
+G = A -0.010983*exp(j*71.4166*pi/180);
+H = A -0.007746*exp(j*63.14*pi/180);
+K = A -0.010983*exp(j*71.4166*pi/180);
+
 
 % define which positions we want as frames in our movie
-frames = 200;    % number of frames in movie
+frames = 40;    % number of frames in movie
 delta = floor(t_size/frames); % time between frames
 index_vec = [1:delta:t_size]';
 
@@ -208,7 +209,7 @@ movie_axes = axis;   %save current axes into movie_axes
 for m=1:length(index_vec)
     index = index_vec(m);
     B = A + r2 * exp(j*phi1(index));
-    C = B - r3 * exp(j*phi3(index));
+    C = B - r3 * exp(j*phi2(index));
     
     loop1 = [A B C A];
     
