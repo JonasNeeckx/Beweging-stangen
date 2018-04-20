@@ -11,7 +11,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [phi2,phi3,phi5,phi6,phi8,phi10,phi11,dphi2,dphi3,dphi5,dphi6,dphi8,dphi10,dphi11,ddphi2,ddphi3,ddphi5,ddphi6,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi1,dphi1,ddphi1,phi2_init,phi3_init,phi5_init,phi6_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar);
+function [phi2,phi3,phi4,phi5,phi6,phi8,phi9,phi10,phi11,dphi2,dphi3,dphi5,dphi6,dphi8,dphi10,dphi11,ddphi2,ddphi3,ddphi5,ddphi6,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi1,dphi1,ddphi1,phi2_init,phi3_init,phi5_init,phi6_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar);
 
 % allocation of the result vectors (this results in better performance because we don't have to reallocate and
 % copy the vector each time we add an element.
@@ -88,6 +88,7 @@ for k=1:t_size
     
     phi4(k) = phi3(k) + gamma;
     phi9(k) = phi8(k) + 2*pi - gamma;
+    
     % *** velocity analysis ***
     
     A = [-r3*sin(phi2(k)),0,0,0,0,0,0,0,0,0;
@@ -179,14 +180,14 @@ end % loop over positions
 % point P = fixed
 A = 0;
 % point S = fixed
-D = A -0.007746*exp(j*63.14*pi/180);
-G = A -0.010983*exp(j*71.4166*pi/180);
+D = A +0.007746*exp(j*-63.14*pi/180);
+G = A +0.010983*exp(j*-71.4166*pi/180);
 H = A -0.007746*exp(j*63.14*pi/180);
 K = A -0.010983*exp(j*71.4166*pi/180);
 
 
 % define which positions we want as frames in our movie
-frames = 40;    % number of frames in movie
+frames = 200;    % number of frames in movie
 delta = floor(t_size/frames); % time between frames
 index_vec = [1:delta:t_size]';
 
@@ -208,23 +209,20 @@ movie_axes = axis;   %save current axes into movie_axes
 % draw and save movie frame
 for m=1:length(index_vec)
     index = index_vec(m);
-    B = A + r2 * exp(j*phi1(index));
-    C = B - r3 * exp(j*phi2(index));
+    B = A - r2 * exp(j*phi1(index));
+    C = B - r3 * exp(j*-phi2(index));
     
     loop1 = [A B C A];
     
-    D = C + r4(index) * exp(j*phi3(index));
     
     loop2 = [A C D A]
     
-    H = C + r8(index) * exp(j*phi8(index));
     
     loop3 = [A C H A]
     
-    E = D - r5*exp(j*phi4(index));
-    F = E + r6*exp(j*phi5(index));
-    G = F - r7*exp(j*phi6(index));
-    
+    E = D + r5*exp(j*phi4(index));
+    F = E - r6*exp(j*phi5(index));
+
     loop4 = [D E F G D]
     
     I = H -r9*exp(j*phi9(index));
@@ -232,14 +230,15 @@ for m=1:length(index_vec)
     K = J - r11*exp(j*phi11(index));
     
     loop5 = [H I J K H]
+    loop = [A B C D E F G]
     figure(10)
     clf
     hold on
-    plot(real(loop1),imag(loop1),'-o')
-    plot(real(loop2),imag(loop2),'-o')
-    plot(real(loop3),imag(loop3),'-o')
-    plot(real(loop4),imag(loop4),'-o')
-    plot(real(loop5),imag(loop5),'-o')
+    plot(real(loop),imag(loop),'-o')
+%     plot(real(loop2),imag(loop2),'-o')
+%     plot(real(loop3),imag(loop3),'-o')
+%     plot(real(loop4),imag(loop4),'-o')
+%     plot(real(loop5),imag(loop5),'-o')
     
     axis(movie_axes);
     xlabel('x [m]')
