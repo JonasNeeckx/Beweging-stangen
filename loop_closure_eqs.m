@@ -34,8 +34,8 @@ phi9 = phi8 + 2*pi - gamma;
 
 
 % loop closure equations:
-F(1)=r2*cos(phi1)+r3*cos(phi2);
-F(2)=r2*sin(phi1)+r3*sin(phi2)+r13;
+F(1)=r2*cos(phi1)-r3*cos(phi2);
+F(2)=r2*sin(phi1)-r3*sin(phi2)+r13;
 
 F(3)=-r4*cos(phi3)+r14x;
 F(4)=-r14y+r13-r4*sin(phi3);
@@ -46,7 +46,7 @@ F(6)=-r8*sin(phi8)+r13-r18y;
 F(7)=r5*cos(phi3 + gamma)+r6*cos(phi5)+r7*cos(phi6);
 F(8)=r5*sin(phi3 + gamma)+r6*sin(phi5)+r7*sin(phi6)+r47y;
 
-F(9)=r9*cos(phi8 + 2*pi -gamma)+r10*cos(phi10)+r11*cos(phi11);
-F(10)=r9*sin(phi8 + 2*pi - gamma)+r10*sin(phi10)+r11*cos(phi11)+r811y;
+F(9)=+r9*cos(phi8 + 2*pi -gamma)+r10*cos(phi10)+r11*cos(phi11);
+F(10)=+r9*sin(phi8 + 2*pi - gamma)+r10*sin(phi10)+r11*sin(phi11)+r811y;
 
 

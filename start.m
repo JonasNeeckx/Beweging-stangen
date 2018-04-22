@@ -20,22 +20,23 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % program data
-fig_kin_4bar = 1;        % draw figures of kinematic analysis if 1
+fig_kin_4bar = 1;
+fig_kin_check = 1;% draw figures of kinematic analysis if 1
 fig_dyn_4bar = 0;        % draw figures of dynamic analysis if 1
 
 % kinematic parameters (link lengths)
 r2 = 0.00375;
 r3 = 0.00786;
 r5 = 0.00800;
-r6 = 0.0045;
+r6 = 0.00450;
 r7 = 0.00800;
-r9 = 0.008;
-r10 = 0.0045;
-r11 = 0.008;
+r9 = 0.00800;
+r10 = 0.00450;
+r11 = 0.00800;
 r14y = 0.00691;
-r14x = 0.0035;
-r47y = 0.0035;
-r18x = 0.0035;
+r14x = 0.00350;
+r47y = 0.00350;
+r18x = 0.00350;
 r18y = 0.00691;
 r811y = 0.0035;
 
@@ -81,7 +82,7 @@ J11 = m9*r9^2/12;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % position analysis
-phi2_init = 241*pi/180;
+phi2_init = 60*pi/180;
 phi3_init = 0;    % initial condition for first step of position analysis with fsolve (phi3 and phi4)
 phi5_init = 90*pi/180;  % VERY IMPORTANT because it determines which branch of the mechanism you're in
 phi6_init = 210*pi/180;
@@ -89,8 +90,8 @@ phi8_init = pi;
 phi10_init = 90*pi/180;
 phi11_init = 330*pi/180;
 r13_init = 0.00691;
-r4_init = 0.0035;
-r8_init = 0.0035; 
+r4_init = 0.00350;
+r8_init = 0.00350; 
 
 t_begin = 0;                   % start time of simulation
 t_end = 10;                    % end time of simulation
@@ -98,8 +99,8 @@ Ts = 0.05;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
-omega = 0.5;                   % omega = 145
-phi1=omega*t+(179*pi/180);
+omega = 1;                   % omega = 145
+phi1=omega*t+(359*pi/180);
 tijdsvec = size(t);
 dphi1=ones(tijdsvec(1),1).*omega; % ten allen tijde omega
 ddphi1=zeros(tijdsvec(1),1); % ten allen tijde nul
