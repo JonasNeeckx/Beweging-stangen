@@ -12,152 +12,241 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function [F_P_x,F_Q_x,F_R_x,F_S_x,F_P_y,F_Q_y,F_R_y,F_S_y,M_P] = ...
-dynamics_4bar(phi2,phi3,phi4,dphi2,dphi3,dphi4,ddphi2,ddphi3,ddphi4,r2,r3,r4, ...
-    m2,m3,m4,X2,X3,X4,Y2,Y3,Y4,J2,J3,J4,t,fig_dyn_4bar)
+function [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x, F_56_y, F_67_x, F_67_y,...
+    F_G_x, F_G_y, F_H_x, F_H_y, F_910_x, F_910_y, F_1011_x, F_1011_y, F_K_x, F_K_y, M_A] = ...
+dynamics_4bar(phi1,phi2,phi3,phi4,phi5,phi6,phi8,phi9,phi10,phi11,...
+dphi1,dphi2,dphi3,dphi4, dphi5, dphi6, dphi8, dphi9, dphi10, dphi11,...
+ddphi1,ddphi2,ddphi3,ddphi4,ddphi5, ddphi6, ddphi8, ddphi9, ddphi10, ddphi11,...
+r2,r3,r4,r5,r6,r7,r8,r9,r10,r11, ...
+m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,...
+X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,...
+Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,...
+J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_4bar)
 
 
 % a lot of definitions to make the matrix A and B a bit clear.
 % skip the definitions for now (move down to "force analysis")
 % and check them when you need them.
 
+%Thrust on the wing (simplified to a force in the middle of the wing)
+F_wing = 0.12;
+Y_wing = 0.03;
 
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
-cog2_1_x = -X2*sin(phi1);
-cog2_1_y = X2*cos(phi1);
-cog2_2_x = X2*sin(phi1);
-cog2_2_y = X2*cos(phi1);
-cog3_2_x = -X3*sin(phi2);
-cog3_2_y = X3*cos(phi2);
-cog3_3_x = X3*sin(phi2);
-cog3_3_y = -X3*cos(phi2);
-cog4_3_x = -X4*sin(phi3);
-cog4_3_y = X4*cos(phi3);
-cog5_5_x = X5*sin(phi4);
-cog5_5_y = -X5*cos(phi4);
-cog45_3_x = -X45*sin(phi3) -cos(phi3)*Y45;
-cog45_3_y = X45*cos(phi3) -Y45*sin(phi3);
-cog45_4_x = (X45-r4)*-sin(phi3) -cos(phi3)*Y45;
-cog45_4_x = (X45-r4)*cos(phi3) -Y45*sin(phi3);
-cog45_5_x = -(X45-r4-r5*cos(y))*sin(phi3) -(Y45 -r5*sin(y))*cos(phi3);
-cog45_5_y = (X45-r4-r5*cos(y))*cos(phi3) -(Y45-r5*sin(y))*sin(phi3);
-cog6_5_x = -sin(phi5)*X6 -cos(phi5)*Y6;
-cog6_5_y = cos(phi5)*X6 -sin(phi5)*Y6;
-cog6_6_x = -sin(phi5)*(X6+r7) -cos(phi5)*Y6;
-cog6_6_y = cos(phi5)*(X6+r7) -sin(phi5)*Y6;
-cog7_6_x = sin(phi6)*X7;
-cog7_6_y = -cos(phi6)*X7;
-cog7_7_x = -sin(phi6)*X7;
-cog7_7_y = cos(phi6)*X7;
-cog8_3_x = X8*sin(phi7);
-cog8_3_y = -X8*cos(phi7);
-cog9_9_x = -X9*sin(phi8);
-cog9_9_y = X9*cos(phi8);
-cog89_3_x = -sin(phi8)*X89 -cos(phi8)*Y89;
-cog89_3_y = cos(phi8)*X89 -sin(phi8)*Y89;
-cog89_8_x = sin(phi8)*(X89-r8) -cos(phi8)*Y89;
-cog89_8_y = -cos(phi8)*(X89-r8)-sin(phi8)*Y89;
-cog89_9_x = -sin(phi8)*(X89-r8-r9*cos(y)) -cos(phi8)*(Y89-sin(y));
-cog89_9_y =cos(phi8)*(X89-r8-r9cos(y)) -sin(phi8)*(Y89-sin(y));
-cog10_9_x =-sin(phi9)*X10 -cos(phi9)*Y10;
-cog10_9_y =cos(phi9)*X10 -sin(phi9)*Y10;
-cog10_10_x =-sin(phi9)*(X10-r10) -cos(phi9)*Y10;
-cog10_10_y =cos(phi9)*(X10-r10) -sin(phi9)*Y10;
-cog11_10_x =sin(phi9)*x10 +cos(phi9)*Y10;
-cog11_10_y =-cos(phi9)*X10 -sin(phi9)*Y10;
-cog11_11_x = -X11*sin(phi10);
-cog11_11_y = X11*cos(phi10);
+cog2_A_x = X2*cos(phi1);
+cog2_A_y = X2*sin(phi1);
+cog2_B_x = -X2*cos(phi1);
+cog2_B_y = -X2*sin(phi1);
+cog3_B_x = -X3*cos(phi2);
+cog3_B_y = -X3*sin(phi2);
+cog3_C_x = X3*cos(phi2);
+cog3_C_y = X3*sin(phi2); 
+cog6_E_x = cos(phi5)*X6 - sin(phi5)*Y6;
+cog6_E_y = sin(phi5)*X6 + cos(phi5)*Y6;
+cog6_F_x = -cos(phi5)*X6 - sin(phi5)*Y6;
+cog6_F_y = -sin(phi5)*X6 + cos(phi5)*Y6;
+cog7_F_x = cos(phi6)*X7;
+cog7_F_y = sin(phi6)*X7;
+cog7_G_x = -cos(phi6)*X7;
+cog7_G_y = -sin(phi6)*X7;
+cog10_I_x = cos(phi10)*X10 - sin(phi10)*Y10;
+cog10_I_y = sin(phi10)*X10 + cos(phi10)*Y10;
+cog10_J_x = -cos(phi10)*X10 - sin(phi10)*Y10;
+cog10_J_y =	-sin(phi10)*X10 + cos(phi10)*Y10;
+cog11_J_x = cos(phi11)*X11;
+cog11_J_y = sin(phi11)*X11;
+cog11_K_x = -X11*cos(phi11);
+cog11_K_y = -X11*sin(phi11);
+
+%Define additional centers of gravity for the calculation of the
+%acceleration and rotation
+cog45_D_x = (-X4*cos(phi3)*m4 + X5*cos(phi4)*m5)/(m4+m5);
+cog45_D_y = (-X4*sin(phi3)*m4 + X5*sin(phi4)*m5)/(m4+m5);
+cog89_H_x = (-X8*cos(phi8)*m8 + X9*cos(phi9)*m9)/(m8+m9);
+cog89_H_y = (-X8*sin(phi8)*m8 + X59*sin(phi9)*m9)/(m8+m9);
+
+%Additional distances
+d_ED_x = -r5*cos(phi4);
+d_ED_y = -r5*sin(phi4);
+d_IH_x = -r9*cos(phi9);
+d_IH_y = -r9*sin(phi9);
 
 % 3D omega (dphi) and alpha (ddphi) vectors)
+omega1 = [zeros(size(phi2)) zeros(size(phi2)) dphi1];
 omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2];
 omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
 omega4 = [zeros(size(phi2)) zeros(size(phi2)) dphi4];
 omega5 = [zeros(size(phi2)) zeros(size(phi2)) dphi5];
 omega6 = [zeros(size(phi2)) zeros(size(phi2)) dphi6];
-omega7 = [zeros(size(phi2)) zeros(size(phi2)) dphi7];
 omega8 = [zeros(size(phi2)) zeros(size(phi2)) dphi8];
 omega9 = [zeros(size(phi2)) zeros(size(phi2)) dphi9];
 omega10 = [zeros(size(phi2)) zeros(size(phi2)) dphi10];
+omega11 = [zeros(size(phi2)) zeros(size(phi2)) dphi11];
+alpha1 = [zeros(size(phi2)) zeros(size(phi2)) ddphi1];
 alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2];
 alpha3 = [zeros(size(phi2)) zeros(size(phi2)) ddphi3];
 alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
 alpha5 = [zeros(size(phi2)) zeros(size(phi2)) ddphi5];
 alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
-alpha7 = [zeros(size(phi2)) zeros(size(phi2)) ddphi7];
 alpha8 = [zeros(size(phi2)) zeros(size(phi2)) ddphi8];
 alpha9 = [zeros(size(phi2)) zeros(size(phi2)) ddphi9];
 alpha10 = [zeros(size(phi2)) zeros(size(phi2)) ddphi10];
 alpha11 = [zeros(size(phi2)) zeros(size(phi2)) ddphi11];
 
 % 3D model vectors
-P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
-Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
-S_cog4_vec = [-cog4_S_x    -cog4_S_y    zeros(size(phi2))];
-PQ_vec = [r2*cos(phi2) r2*sin(phi2) zeros(size(phi2))];
+cog2_A_vec = [cog2_A_x      cog2_A_y        zeros(size(phi2))];
+AB_vec = [r2*cos(phi1)      r2*sin(phi1)    zeros(size(phi2))];
+cog3_B_vec = [cog3_B_x      cog3_B_y        zeros(size(phi2))];
+cog45_D_vec = [cog45_D_x    cog45_D_y       zeros(size(phi2))];
+DE_vec = [r5*cos(phi4)      r5*sin(phi4)    zeros(size(phi2))];
+cog6_E_vec = [cog6_E_x      cog6_E_y        zeros(size(phi2))];
+cog7_G_vec = [cog7_G_x      cog7_G_y        zeros(size(phi2))];
+cog89_H_vec = [cog89_H_x    cog89_H_y       zeros(size(phi2))];
+HI_vec = [r9*cos(phi9)      r9*sin(phi9)    zeros(size(phi2))];
+cog10_I_vec = [cog10_I_x    cog10_I_y       zeros(size(phi2))];
 
 % acceleration vectors
-acc_2 =       cross(omega2,cross(omega2,P_cog2_vec))+cross(alpha2,P_cog2_vec);
-acc_Q =       cross(omega2,cross(omega2,PQ_vec    ))+cross(alpha2,PQ_vec    );
-acc_3 = acc_Q+cross(omega3,cross(omega3,Q_cog3_vec))+cross(alpha3,Q_cog3_vec);
-acc_4 =       cross(omega4,cross(omega4,S_cog4_vec))+cross(alpha4,S_cog4_vec);
+acc_2 = cross(omega1,cross(omega1,cog2_A_vec)) + cross(alpha1,cog2_A_vec);
+acc_B = cross(omega1,cross(omega1, AB_vec)) + cross(alpha1, AB_vec);
+acc_3 = acc_B + cross(omega2, cross(omega2,  cog3_B_vec)) + cross(alpha2, cog3_B_vec);
+acc_45 = cross(omega3, cross(omega3, cog45_D_vec)) + cross(alpha3, cog45_D_vec);
+acc_E = cross(omega4, cross(omega4, DE_vec)) + cross(alpha4, DE_vec);
+acc_6 = acc_E + cross(omega5, cross(omega5, cog6_E_vec)) + cross(alpha5, cog6_E_vec);
+acc_7 = cross(omega6, cross(omega6, cog7_G_vec)) + cross(alpha6, cog7_G_vec);
+acc_89 = cross(omega8, cross(omega8, cog89_H_vec)) + cross(alpha8, cog89_H_vec);
+acc_I = cross(omega9, cross(omega9, HI_vec)) + cross(alpha9, HI_vec);
+acc_10 = acc_I + cross(omega10, cross(omega10, cog10_I_vec)) + cross(alpha10, cog10_I_vec);
+acc_11 = cross(omega11, cross(omega11, cog11_K_vec)) + cross(alpha11, cog11_K_vec);
+
 acc_2x = acc_2(:,1);
 acc_2y = acc_2(:,2);
 acc_3x = acc_3(:,1);
 acc_3y = acc_3(:,2);
-acc_4x = acc_4(:,1);
-acc_4y = acc_4(:,2);
-
+acc_45x = acc_45(:,1);
+acc_45y = acc_45(:,2);
+acc_6x = acc_6(:,1);
+acc_6y = acc_6(:,2);
+acc_7x = acc_7(:,1);
+acc_7y = acc_7(:,2);
+acc_89x = acc_89(:,1);
+acc_89y = acc_89(:,2);
+acc_10x = acc_10(:,1);
+acc_10y = acc_10(:,2);
+acc_11x = acc_11(:,1);
+acc_11y = acc_11(:,2);
 
 % **********************
 % *** force analysis ***
 % **********************
-
 % allocate matrices for force (F) and moment (M)
-F_P_x = zeros(size(phi2));
-F_P_y = zeros(size(phi2));
-F_Q_x = zeros(size(phi2));
-F_Q_y = zeros(size(phi2));
-F_R_x = zeros(size(phi2));
-F_R_y = zeros(size(phi2));
-F_S_x = zeros(size(phi2));
-F_S_y = zeros(size(phi2));
-M_P = zeros(size(phi2));
+F_A_x = zeros(size(phi2));
+F_A_y = zeros(size(phi2));
+F_23_x = zeros(size(phi2));
+F_23_y = zeros(size(phi2));
+F_C_x = zeros(size(phi2));
+F_34 = zeros(size(phi2));
+F_38 = zeros(size(phi2));
+F_D_x = zeros(size(phi2));
+F_D_y = zeros(size(phi2));
+F_56_x = zeros(size(phi2));
+F_56_y = zeros(size(phi2));
+F_67_x = zeros(size(phi2));
+F_67_y = zeros(size(phi2));
+F_G_x = zeros(size(phi2));
+F_G_y = zeros(size(phi2));
+F_H_x = zeros(size(phi2));
+F_H_y = zeros(size(phi2));
+F_910_x = zeros(size(phi2));
+F_910_y = zeros(size(phi2));
+F_1011_x = zeros(size(phi2));
+F_1011_y = zeros(size(phi2));
+F_K_x = zeros(size(phi2));
+F_K_y = zeros(size(phi2));
+M_A = zeros(size(phi2));
 
 % calculate dynamics for each time step
 t_size = size(t,1);    % number of simulation steps
 for k=1:t_size
-  A = [ 1           0            1            0            0            0            0           0           0;
-        0           1            0            1            0            0            0           0           0;
-        0           0           -1            0           -1            0            0           0           0;
-        0           0            0           -1            0           -1            0           0           0;
-        0           0            0            0            1            0            1           0           0;
-        0           0            0            0            0            1            0           1           0;
-       -cog2_P_y(k) cog2_P_x(k) -cog2_Q_y(k)  cog2_Q_x(k)  0            0            0           0           1;
-        0           0            cog3_Q_y(k) -cog3_Q_x(k)  cog3_R_y(k) -cog3_R_x(k)  0           0           0;
-        0           0            0            0           -cog4_R_y(k)  cog4_R_x(k) -cog4_S_y(k) cog4_S_x(k) 0];
-    
+  A = [ 1   0   -1  0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   1   0  -1   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   1   0   1 sin(phi3(k)) -sin(phi8(k)) 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   1   0 -cos(phi3(k)) cos(phi8(k)) 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0 -sin(phi3(k)) 0           1   0  -1   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0  cos(phi3(k)) 0           0   1   0  -1   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0           0           0   0   1   0  -1   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0           0           0   0   0   1   0  -1   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0           0           0   0   0   0   1   0   1   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0           0           0   0   0   0   0   1   0   1   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0          sin(phi8(k)) 0   0   0   0   0   0   0   0   1   0  -1   0   0   0   0   0   0;
+        0   0   0   0   0   0         -cos(phi8(k)) 0   0   0   0   0   0   0   0   0   1   0  -1   0   0   0   0   0;
+        0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   1   0  -1   0   0   0   0;
+        0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   1   0  -1   0   0   0;
+        0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0   0;
+        0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0;
+        cog2_A_y(k) -cog2_A_x(x) -cog2_B_y(k) cog2_B_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1;
+        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) cog3_C_y(k)*sin(phi3(k))+cog3_C_x(k)*cos(phi3(k)) -cog3_C_y(k)*sin(phi8(k))-cog3_x(k)*cos(phi8(k))   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0  -r4(k)   0   0   0  -d_ED_y(k)   d_ED_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0   0   0   0   cog6_E_y(k) -cog6_E_x(k) -cog6_F_y(k) cog6_F_x(k)   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0   0   0   0   0   0   cog7_F_y(k) -cog7_F_x(k) cog7_G_y(k) -cog7_G_x(k)   0   0   0   0   0   0   0   0   0;
+        0   0   0   0   0   0  -r8(k)   0   0   0   0   0   0   0   0   0   0  -d_IH_y(k)  d_IH_x(k)    0   0   0   0   0;
+        0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   cog10_I_y(k) -cog10_I_x(k) -cog10_J_y(k) cog10_J_x(k)   0   0   0;
+        0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   cog11_J_y(k) -cog11_J_x(k) cog11_K_y(k) -cog11_K_x(k)   0];
+        
   B = [ m2*acc_2x(k);
         m2*acc_2y(k);
         m3*acc_3x(k);
         m3*acc_3y(k);
-        m4*acc_4x(k);
-        m4*acc_4y(k);
-        J2*ddphi2(k);
-        J3*ddphi3(k);
-        J4*ddphi4(k)];
+        m45*acc_45x(k);
+        m45*acc_45y(k);
+        m6*acc_6x(k);
+        m6*acc_6y(k)-F_wing*cos(phi5(k));
+        m7*acc_7x(k)-F_wing*sin(phi5(k));
+        m7*acc_7y(k);     
+        m89*acc_89x(k);
+        m89*acc_89y(k);
+        m10*acc_10x(k)-F_wing*cos(phi10(k));
+        m10*acc_10y(k)-F_wing*sin(phi10(k));
+        m11*acc_11x(k);
+        m11*acc_11y(k);
+        J2*ddphi1(k);
+        J3*ddphi2(k);
+        J45*ddphi3(k);
+        J6*ddphi5(k) - (Y6+Y_wing)*F_wing;
+        J7*ddphi6(k);
+        J89*ddphi8(k);
+        J10*ddphi10(k) - (Y10-Y_wing)*F_wing;
+        J11*ddphi11(k) ];
+    
+    
     
     x = A\B;
     
     % save results
-    F_P_x(k) = x(1);
-    F_P_y(k) = x(2);
-    F_Q_x(k) = x(3);
-    F_Q_y(k) = x(4);
-    F_R_x(k) = x(5);
-    F_R_y(k) = x(6);
-    F_S_x(k) = x(7);
-    F_S_y(k) = x(8);
-    M_P(k)   = x(9);
+    F_A_x(k) = x(1);
+    F_A_y(k) = x(2);
+    F_23_x(k) = x(3);
+    F_23_y(k) = x(4);
+    F_C_x(k) = x(5);
+    F_34(k) = x(6);
+    F_38(k) = x(7);
+    F_D_x(k) = x(8);
+    F_D_y(k) = x(9);
+    F_56_x(k) = x(10);
+    F_56_y(k) = x(11);
+    F_67_x(k) = x(12);
+    F_67_y(k) = x(13);
+    F_G_x(k) = x(14);
+    F_G_y(k) = x(15);
+    F_H_x(k) = x(16);
+    F_H_y(k) = x(17);
+    F_910_x(k) = x(18);
+    F_910_y(k) = x(19);
+    F_1011_x(k) = x(20);
+    F_1011_y(k) = x(21);
+    F_K_x(k) = x(22);
+    F_K_y(k) = x(23);
+    M_A(k) = x(24);
+    
 end
 
 
@@ -170,25 +259,69 @@ if fig_dyn_4bar
     
     figure
     subplot(221)
-    plot(F_P_x,F_P_y),grid
-    xlabel('F_P_x [N]')
-    ylabel('F_P_y [N]')
+    plot(F_A_x,F_A_y),grid
+    xlabel('F_A_x [N]')
+    ylabel('F_A_y [N]')
     axis tight
     subplot(222)
-    plot(F_Q_x,F_Q_y),grid
-    xlabel('F_Q_x [N]')
-    ylabel('F_Q_y [N]')
+    plot(F_23_x,F_23_y),grid
+    xlabel('F_23_x [N]')
+    ylabel('F_Q23_y [N]')
     axis tight
     subplot(223)
-    plot(F_R_x,F_R_y),grid
-    xlabel('F_R_x [N]')
-    ylabel('F_R_y [N]')
+    plot(F_34,F_38),grid
+    xlabel('F_34 [N]')
+    ylabel('F_38[N]')
     axis tight
     subplot(224)
-    plot(F_S_x,F_S_y),grid
-    xlabel('F_S_x [N]')
-    ylabel('F_S_y [N]')
+    plot(F_C_x,zeros(size(phi2))),grid
+    xlabel('F_C_x [N]')
+    ylabel('F_C_y [N]')
     axis tight
+    
+        figure
+    subplot(221)
+    plot(F_D_x,F_D_y),grid
+    xlabel('F_D_x [N]')
+    ylabel('F_D_y [N]')
+    axis tight
+    subplot(222)
+    plot(F_56_x,F_56_y),grid
+    xlabel('F_56_x [N]')
+    ylabel('F_56_y [N]')
+    axis tight
+    subplot(223)
+    plot(F_67_x,F_67_y),grid
+    xlabel('F_67_x [N]')
+    ylabel('F_67_y [N]')
+    axis tight
+    subplot(224)
+    plot(F_G_x,F_G_y),grid
+    xlabel('F_G_x [N]')
+    ylabel('F_G_y [N]')
+    axis tight
+    
+    figure
+    subplot(221)
+    plot(F_H_x,F_H_y),grid
+    xlabel('F_H_x [N]')
+    ylabel('F_H_y [N]')
+    axis tight
+    subplot(222)
+    plot(F_910_x,F_910_y),grid
+    xlabel('F_910_x [N]')
+    ylabel('F_910_y [N]')
+    axis tight
+    subplot(223)
+    plot(F_1011_x,F_1011_y),grid
+    xlabel('F_1011_x [N]')
+    ylabel('F_1011_y [N]')
+    axis tight
+    subplot(224)
+    plot(F_K_x,F_K_y),grid
+    xlabel('F_K_x [N]')
+    ylabel('F_K_y [N]')
+    axis tight    
     
     figure
     plot(t,M_P)
