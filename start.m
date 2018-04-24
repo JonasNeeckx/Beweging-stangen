@@ -114,8 +114,8 @@ r4_init = 0.00350;
 r8_init = 0.00350; 
 
 t_begin = 0;                   % start time of simulation
-t_end = 25;                    % end time of simulation
-Ts = 0.05;                     % time step of simulation
+t_end = 10;                    % end time of simulation
+Ts = 0.001;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
