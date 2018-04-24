@@ -400,10 +400,17 @@ if fig_dyn_4bar
     ylabel('Error [N-m]')
     xlabel('t [s]')
     
-    subplot(224)
-    plot(t,F_Ax_Work-F_A_x)
+    figure
+    subplot(211)
+    plot(t,F_Ax_Work)
     ylabel('F_Ax_control [N]')
-    xlabel('t [s]')    
+    xlabel('t [s]')  
+    
+    subplot(212)
+    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x-F_Ax_Work)    
+    ylabel('F_x_control [N]')
+    xlabel('t [s]')
+    
 end
 
 

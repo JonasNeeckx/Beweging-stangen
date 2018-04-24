@@ -297,7 +297,8 @@ vel_10y = vel_10(:,2);
 vel_11x = vel_11(:,1);
 vel_11y = vel_11(:,2);
 
-M_A_control = zeros(size(phi2));
+M_A_Energy = zeros(size(phi2));
+F_Ax_Work = zeros(size(phi3));
 
 for k = 1:t_size
 M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k)*vel_3x(k) + acc_3y(k)*vel_3y(k))+...
@@ -307,7 +308,8 @@ M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k
     J2*dphi1(k)*ddphi1(k)+J3*dphi2(k)*ddphi2(k)+J45*dphi3(k)*ddphi3(k)+J6*dphi5(k)*ddphi5(k)+J7*dphi6(k)*ddphi6(k)+...
     J89*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi1(k); 
 
-M_A_Work
+F_Ax_Work(k) = m2*acc_2x(k) + m3*acc_3x(k) + m45*acc_45x(k) + m6*acc_6x(k) + ...
+    m7*acc_7x(k) + m89*acc_89x(k) + m10*acc_10x(k) + m11*acc_11x(k);
 end
 
 % **********************
@@ -389,15 +391,19 @@ if fig_dyn_4bar
     xlabel('t [s]')
     
     subplot(222)
-    plot(t,M_A_control)
+    plot(t,M_A_Energy)
     ylabel('M_A_control [N-m]')
     xlabel('t [s]')    
     
     subplot(223)
-    plot(t,M_A-M_A_control)
+    plot(t,M_A-M_A_Energy)
     ylabel('Error [N-m]')
     xlabel('t [s]')
-          
+    
+    subplot(224)
+    plot(t,F_Ax_Work-F_A_x-F_D_x-F_G_x-F_H_x-F_K_x)
+    ylabel('F_Ax_control [N]')
+    xlabel('t [s]')    
 end
 
 
