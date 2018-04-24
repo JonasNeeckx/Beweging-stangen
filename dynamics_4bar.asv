@@ -34,15 +34,10 @@ ddphi4 = ddphi3;
 dphi9 = dphi8;
 ddphi9 = ddphi8;
 
-%The masses and moments of inertia of bonded links are added
+%The moment of inertia of the two bonded links 4-5 and 8-9 are added
 %together
 J45 = J4 + J5;
-J89 = J8 + J9;
-m45 = m4 + m5;
-m89 = m8 + m9;
-m6wing = m6 + mwing;
-m10wing = m10 + mwing;
-
+J89 = J8 + J
 %Thrust on the wing (simplified to a force in the middle of the wing)
 F_wing = 0.12;
 
@@ -213,14 +208,14 @@ for k=1:t_size
         m3*acc_3y(k);
         (m4+m5)*acc_45x(k);
         m45*acc_45y(k);
-        m6wing*acc_6x(k)-F_wing*cos(phi5(k));
-        m6wing*acc_6y(k)-F_wing*sin(phi5(k));
+        (m6+mwing)*acc_6x(k)-F_wing*cos(phi5(k));
+        (m6+mwing)*acc_6y(k)-F_wing*sin(phi5(k));
         m7*acc_7x(k);
         m7*acc_7y(k);     
         m89*acc_89x(k);
         m89*acc_89y(k);
-        m10wing*acc_10x(k)-F_wing*cos(phi10(k));
-        m10wing*acc_10y(k)-F_wing*sin(phi10(k));
+        (m10+mwing)*acc_10x(k)-F_wing*cos(phi10(k));
+        (m10+mwing)*acc_10y(k)-F_wing*sin(phi10(k));
         m11*acc_11x(k);
         m11*acc_11y(k);
         J2*ddphi1(k);
@@ -339,8 +334,8 @@ if fig_dyn_4bar
     axis tight    
     
     figure
-    plot(t,M_A)
-    ylabel('M_A [N-m]')
+    plot(t,M_P)
+    ylabel('M_P [N-m]')
     xlabel('t [s]')
     
 end
