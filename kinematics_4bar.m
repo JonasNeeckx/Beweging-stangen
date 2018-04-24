@@ -193,55 +193,56 @@ G = A +sqrt(0.0035^2+(0.00691+0.0035)^2)*exp(j*+(acosd((0.00691+0.0035)/sqrt(0.0
 H = A -sqrt(0.0035^2+0.00691^2)*exp(j*-(acosd(0.00691/sqrt(0.0035^2+0.00691^2))-90)*pi/180);
 K = A -sqrt(0.0035^2+(0.00691+0.0035)^2)*exp(j*-(acosd((0.00691+0.0035)/sqrt(0.0035^2+(0.00691+0.0035)^2))-90)*pi/180);
 
+% 
+% % define which positions we want as frames in our movie
+% frames = 200;    % number of frames in movie
+% delta = floor(t_size/frames); % time between frames
+% index_vec = [1:delta:t_size]';
+% 
+% % Create a window large enough for the whole mechanisme in all positions, to prevent scrolling.
+% % This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
+% % axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
+% % plots.
+% x_left = -0.015;
+% y_bottom = -0.015;
+% x_right = 0.015;
+% y_top = 0.005;
+% 
+% figure(10)
+% hold on
+% plot([x_left, x_right], [y_bottom, y_top]);
+% axis equal;
+% movie_axes = axis;   %save current axes into movie_axes
+% 
+% % draw and save movie frame
+% for m=1:length(index_vec)
+%     index = index_vec(m);
+%     B = A + r2 * exp(j*phi1(index));
+%     C = B - r3 * exp(j*phi2(index));
+%     
+%     E = D + r5*exp(j*phi4(index));
+%     F = G + r7*exp(j*(phi6(index)-pi));
+% 
+%     I = H +r9*exp(j*phi9(index));
+%     J = K + r11*exp(j*(phi11(index)-pi));
+%     loop = [A B C D E F G F E D C H I J K];
+%     figure(10)
+%     clf
+%     hold on
+%     plot(real(loop),imag(loop),'-o')
+%     
+%     axis(movie_axes);
+%     xlabel('x [m]')
+%     ylabel('y [m]')
+%     set(findobj('type','axes'),'xgrid','on')
+%     set(findobj('type','axes'),'ygrid','on')% set axes as in movie_axes
+%     Movie(m) = getframe;  % save frame to a variable Film
+% end
+% 
+% % save movie
+% save fourbar_movie Movie;
+% close(10);
 
-% define which positions we want as frames in our movie
-frames = 200;    % number of frames in movie
-delta = floor(t_size/frames); % time between frames
-index_vec = [1:delta:t_size]';
-
-% Create a window large enough for the whole mechanisme in all positions, to prevent scrolling.
-% This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
-% axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
-% plots.
-x_left = -0.015;
-y_bottom = -0.015;
-x_right = 0.015;
-y_top = 0.005;
-
-figure(10)
-hold on
-plot([x_left, x_right], [y_bottom, y_top]);
-axis equal;
-movie_axes = axis;   %save current axes into movie_axes
-
-% draw and save movie frame
-for m=1:length(index_vec)
-    index = index_vec(m);
-    B = A + r2 * exp(j*phi1(index));
-    C = B - r3 * exp(j*phi2(index));
-    
-    E = D + r5*exp(j*phi4(index));
-    F = G + r7*exp(j*(phi6(index)-pi));
-
-    I = H +r9*exp(j*phi9(index));
-    J = K + r11*exp(j*(phi11(index)-pi));
-    loop = [A B C D E F G F E D C H I J K];
-    figure(10)
-    clf
-    hold on
-    plot(real(loop),imag(loop),'-o')
-    
-    axis(movie_axes);
-    xlabel('x [m]')
-    ylabel('y [m]')
-    set(findobj('type','axes'),'xgrid','on')
-    set(findobj('type','axes'),'ygrid','on')% set axes as in movie_axes
-    Movie(m) = getframe;  % save frame to a variable Film
-end
-
-% save movie
-save fourbar_movie Movie
-close(10)
 if fig_kin_4bar
     
     %plot assembly at a certain timestep 
