@@ -17,11 +17,12 @@ function [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x,
 dynamics_4bar(phi1,phi2,phi3,phi4,phi5,phi6,phi8,phi9,phi10,phi11,...
 dphi1,dphi2,dphi3, dphi5, dphi6, dphi8,  dphi10, dphi11,...
 ddphi1,ddphi2,ddphi3,ddphi5, ddphi6, ddphi8,  ddphi10, ddphi11,...
-r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing, ...
+r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4, rmax8, ...
 m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,mwing, ...
 X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,Xwing, ...
 Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Ywing, ...
 J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_4bar)
+
 
 % a lot of definitions to make the matrix A and B a bit clear.
 % skip the definitions for now (move down to "force analysis")
@@ -34,12 +35,17 @@ ddphi4 = ddphi3;
 dphi9 = dphi8;
 ddphi9 = ddphi8;
 
-%The moment of inertia of the two bonded links 4-5 and 8-9 are added
+%The masses and moments of inertia of bonded links are added
 %together
 J45 = J4 + J5;
-J89 = J8 + J
+J89 = J8 + J9;
+m45 = m4 + m5;
+m89 = m8 + m9;
+m6wing = m6 + mwing;
+m10wing = m10 + mwing;
+
 %Thrust on the wing (simplified to a force in the middle of the wing)
-F_wing = 0.12;
+F_wing = 0;% 0.12;
 
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
 cog2_A_x = X2*cos(phi1);
@@ -69,12 +75,12 @@ cog11_K_y = -X11*sin(phi11);
 
 %Define additional centers of gravity for the calculation of the
 %acceleration and rotation
-cog45_D_x = (-X4*cos(phi3)*m4 + X5*cos(phi4)*m5)/(m4+m5);
-cog45_D_y = (-X4*sin(phi3)*m4 + X5*sin(phi4)*m5)/(m4+m5);
-cog89_H_x = (-X8*cos(phi8)*m8 + X9*cos(phi9)*m9)/(m8+m9);
-cog89_H_y = (-X8*sin(phi8)*m8 + X9*sin(phi9)*m9)/(m8+m9);
+cog45_D_x = (-X4*cos(phi3)*rmax4 + X5*cos(phi4)*r5)/(rmax4+r5);
+cog45_D_y = (-X4*sin(phi3)*rmax4 + X5*sin(phi4)*r5)/(rmax4+r5);
+cog89_H_x = (-X8*cos(phi8)*rmax8 + X9*cos(phi9)*r9)/(rmax8+r9);
+cog89_H_y = (-X8*sin(phi8)*rmax8 + X9*sin(phi9)*r9)/(rmax8+r9);
 
-%Additional distances
+%Additional distances d_AB_i from point A to B over axis i
 d_ED_x = -r5*cos(phi4);
 d_ED_y = -r5*sin(phi4);
 d_IH_x = -r9*cos(phi9);
@@ -198,7 +204,7 @@ for k=1:t_size
         0   0   0   0   0  -r4(k)   0   0   0  -d_ED_y(k)   d_ED_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   cog6_E_y(k) -cog6_E_x(k) -cog6_F_y(k) cog6_F_x(k)   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   cog7_F_y(k) -cog7_F_x(k) cog7_G_y(k) -cog7_G_x(k)   0   0   0   0   0   0   0   0   0;
-        0   0   0   0   0   0  -r8(k)   0   0   0   0   0   0   0   0   0   0  -d_IH_y(k)  d_IH_x(k)    0   0   0   0   0;
+        0   0   0   0   0   0   r8(k)   0   0   0   0   0   0   0   0   0   0  -d_IH_y(k)  d_IH_x(k)    0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   cog10_I_y(k) -cog10_I_x(k) -cog10_J_y(k) cog10_J_x(k)   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   cog11_J_y(k) -cog11_J_x(k) cog11_K_y(k) -cog11_K_x(k)   0];
         
@@ -206,16 +212,16 @@ for k=1:t_size
         m2*acc_2y(k);
         m3*acc_3x(k);
         m3*acc_3y(k);
-        (m4+m5)*acc_45x(k);
+        m45*acc_45x(k);
         m45*acc_45y(k);
-        (m6+mwing)*acc_6x(k)-F_wing*cos(phi5(k));
-        (m6+mwing)*acc_6y(k)-F_wing*sin(phi5(k));
+        m6wing*acc_6x(k)-F_wing*cos(phi5(k));
+        m6wing*acc_6y(k)-F_wing*sin(phi5(k));
         m7*acc_7x(k);
         m7*acc_7y(k);     
         m89*acc_89x(k);
         m89*acc_89y(k);
-        (m10+mwing)*acc_10x(k)-F_wing*cos(phi10(k));
-        (m10+mwing)*acc_10y(k)-F_wing*sin(phi10(k));
+        m10wing*acc_10x(k)-F_wing*cos(phi10(k));
+        m10wing*acc_10y(k)-F_wing*sin(phi10(k));
         m11*acc_11x(k);
         m11*acc_11y(k);
         J2*ddphi1(k);
@@ -225,9 +231,7 @@ for k=1:t_size
         J7*ddphi6(k);
         J89*ddphi8(k);
         J10*ddphi10(k) - (Y10-Ywing)*F_wing;
-        J11*ddphi11(k) ];
-    
-    
+        J11*ddphi11(k) ];    
     
     x = A\B;
     
@@ -259,7 +263,52 @@ for k=1:t_size
     
 end
 
+%**********************
+%***** controle *******
+%**********************
 
+% velocity vectors
+vel_2 = cross(omega1,cog2_A_vec);
+vel_B = cross(omega1, AB_vec);
+vel_3 = vel_B + cross(omega2,  cog3_B_vec);
+vel_45 = cross(omega3, cog45_D_vec);
+vel_E = cross(omega4, DE_vec);
+vel_6 = vel_E + cross(omega5, cog6_E_vec);
+vel_7 = cross(omega6, cog7_G_vec);
+vel_89 = cross(omega8, cog89_H_vec);
+vel_I = cross(omega9, HI_vec);
+vel_10 = vel_I + cross(omega10, cog10_I_vec);
+vel_11 = cross(omega11, cog11_K_vec);
+
+vel_2x = vel_2(:,1);
+vel_2y = vel_2(:,2);
+vel_3x = vel_3(:,1);
+vel_3y = vel_3(:,2);
+vel_45x = vel_45(:,1);
+vel_45y = vel_45(:,2);
+vel_6x = vel_6(:,1);
+vel_6y = vel_6(:,2);
+vel_7x = vel_7(:,1);
+vel_7y = vel_7(:,2);
+vel_89x = vel_89(:,1);
+vel_89y = vel_89(:,2);
+vel_10x = vel_10(:,1);
+vel_10y = vel_10(:,2);
+vel_11x = vel_11(:,1);
+vel_11y = vel_11(:,2);
+
+M_A_control = zeros(size(phi2));
+
+for k = 1:t_size
+M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k)*vel_3x(k) + acc_3y(k)*vel_3y(k))+...
+    m45 * (acc_45x(k)*vel_45x(k) + acc_45y(k)*vel_45y(k))+m6wing * (acc_6x(k)*vel_6x(k) + acc_6y(k)*vel_6y(k))+...
+    m7 * (acc_7x(k)*vel_7x(k) + acc_7y(k)*vel_7y(k))+m89 * (acc_89x(k)*vel_89x(k) + acc_89y(k)*vel_89y(k))+...
+    m10wing * (acc_10x(k)*vel_10x(k) + acc_10y(k)*vel_10y(k))+m11 * (acc_11x(k)*vel_11x(k) + acc_11y(k)*vel_11y(k))+...
+    J2*dphi1(k)*ddphi1(k)+J3*dphi2(k)*ddphi2(k)+J45*dphi3(k)*ddphi3(k)+J6*dphi5(k)*ddphi5(k)+J7*dphi6(k)*ddphi6(k)+...
+    J89*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi1(k); 
+
+M_A_Work
+end
 
 % **********************
 % *** plot figures ***
@@ -275,13 +324,13 @@ if fig_dyn_4bar
     axis tight
     subplot(222)
     plot(F_23_x,F_23_y),grid
-    xlabel('F_23_x [N]')
-    ylabel('F_Q23_y [N]')
+    xlabel('F_2_3_x [N]')
+    ylabel('F_2_3_y [N]')
     axis tight
     subplot(223)
     plot(F_34,F_38),grid
-    xlabel('F_34 [N]')
-    ylabel('F_38[N]')
+    xlabel('F_3_4 [N]')
+    ylabel('F_3_8[N]')
     axis tight
     subplot(224)
     plot(F_C_x,zeros(size(phi2))),grid
@@ -297,13 +346,13 @@ if fig_dyn_4bar
     axis tight
     subplot(222)
     plot(F_56_x,F_56_y),grid
-    xlabel('F_56_x [N]')
-    ylabel('F_56_y [N]')
+    xlabel('F_5_6_x [N]')
+    ylabel('F_5_6_y [N]')
     axis tight
     subplot(223)
     plot(F_67_x,F_67_y),grid
-    xlabel('F_67_x [N]')
-    ylabel('F_67_y [N]')
+    xlabel('F_6_7_x [N]')
+    ylabel('F_6_7_y [N]')
     axis tight
     subplot(224)
     plot(F_G_x,F_G_y),grid
@@ -319,13 +368,13 @@ if fig_dyn_4bar
     axis tight
     subplot(222)
     plot(F_910_x,F_910_y),grid
-    xlabel('F_910_x [N]')
-    ylabel('F_910_y [N]')
+    xlabel('F_9_1_0_x [N]')
+    ylabel('F_9_1_0_y [N]')
     axis tight
     subplot(223)
     plot(F_1011_x,F_1011_y),grid
-    xlabel('F_1011_x [N]')
-    ylabel('F_1011_y [N]')
+    xlabel('F_1_0_1_1_x [N]')
+    ylabel('F_1_0_1_1_y [N]')
     axis tight
     subplot(224)
     plot(F_K_x,F_K_y),grid
@@ -334,10 +383,21 @@ if fig_dyn_4bar
     axis tight    
     
     figure
-    plot(t,M_P)
-    ylabel('M_P [N-m]')
+    subplot(221)
+    plot(t,M_A)
+    ylabel('M_A [N-m]')
     xlabel('t [s]')
     
+    subplot(222)
+    plot(t,M_A_control)
+    ylabel('M_A_control [N-m]')
+    xlabel('t [s]')    
+    
+    subplot(223)
+    plot(t,M_A-M_A_control)
+    ylabel('Error [N-m]')
+    xlabel('t [s]')
+          
 end
 
 
