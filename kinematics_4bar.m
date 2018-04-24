@@ -551,3 +551,48 @@ end
     text(0.5, 1,'\bf Acceleration control for bar 8, 14, 5 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
+    
+%     snelheidscontrole via meerdere paden
+    % controle voor scharnier f
+    D_E_vect = [r5*cos(phi4) r5*sin(phi4) zeros(size(phi1))];
+    E_F_vect = [r6*cos(phi5) r6*sin(phi5) zeros(size(phi1))];
+    omega4 = [zeros(size(phi1)) zeros(size(phi1)) dphi3];
+    omega5 = [zeros(size(phi1)) zeros(size(phi1)) dphi5];
+    omega6 = [zeros(size(phi1)) zeros(size(phi1)) dphi6];
+    G_F_vect = [r7*cos(phi6-pi) r7*sin(phi6-pi) zeros(size(phi1))];
+    vF = cross(omega4,D_E_vect) + cross(omega5,E_F_vect);
+    vF_check = cross(omega6,G_F_vect);
+    vF_diff = zeros(length(vF),1);
+    for i=1:length(vF)
+        vF_diff(i) = norm(vF(i,:)) - norm(vF_check(i,:));
+    end
+    figure('Name','Velocity control for f via different paths')
+    subplot(321)
+    plot(t,vF_diff);
+    xlabel('t [s]')
+    ylabel('absolute error v_f [m/s] ')
+    subplot(322)
+    plot(t,vF_diff./norm(vF));
+    xlabel('t [s]')
+    ylabel('relative error v_f [] ')
+    
+    %     versnellingscontrole via meerdere paden
+    alpha5 = [zeros(size(phi1)) zeros(size(phi1)) ddphi5];
+    alpha6 = [zeros(size(phi1)) zeros(size(phi1)) ddphi6];
+    alpha4 = [zeros(size(phi1)) zeros(size(phi1)) ddphi3];
+    aF = cross(omega4,cross(omega4,D_E_vect)) + cross(omega5,cross(omega5,E_F_vect)) + cross(alpha4,D_E_vect) + cross(alpha5,E_F_vect);
+    aF_check = cross(omega6,cross(omega6,G_F_vect)) + cross(alpha6,G_F_vect);
+    aF_diff = zeros(length(aF),1);
+    for i=1:length(aF)
+        aF_diff(i) = norm(aF(i,:)) - norm(aF_check(i,:));
+    end
+        figure('Name','Acceleration control for f via different paths')
+    subplot(321)
+    plot(t,aF_diff);
+    xlabel('t [s]')
+    ylabel('absolute error a_f [m/s] ')
+    subplot(322)
+    plot(t,aF_diff./norm(aF));
+    xlabel('t [s]')
+    ylabel('relative error a_f [] ')
+    
