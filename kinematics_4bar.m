@@ -102,7 +102,7 @@ for k=1:t_size
         0,0,0,0,-r9*sin(phi9(k)),-r10*sin(phi10(k)),-r11*sin(phi11(k)),0,0,0;
         0,0,0,0,r9*cos(phi9(k)),r10*cos(phi10(k)),r11*cos(phi11(k)),0,0,0];
         
-    B = [r2*sin(phi1(k))*dphi1(k);
+    B = [+r2*sin(phi1(k))*dphi1(k);
         -r2*cos(phi1(k))*dphi1(k);
         0;
         0;
@@ -130,21 +130,30 @@ for k=1:t_size
     % *** acceleration analysis ***
     
         
-      A = A;
+      A = [r3*sin(phi2(k)),0,0,0,0,0,0,0,0,0;
+          -r3*cos(phi2(k)),0,0,0,0,0,0,1,0,0;
+          0,r4(k)*sin(phi3(k)),0,0,0,0,0,0,-cos(phi3(k)),0;
+          0,-r4(k)*cos(phi3(k)),0,0,0,0,0,1,-sin(phi3(k)),0;
+          0,0,0,0,r8(k)*sin(phi8(k)),0,0,0,0,-cos(phi8(k));
+          0,0,0,0,-r8(k)*cos(phi8(k)),0,0,1,0,-sin(phi8(k));
+          0,-r5*sin(phi4(k)),-r6*sin(phi5(k)),-r7*sin(phi6(k)),0,0,0,0,0,0;
+          0,r5*cos(phi4(k)),r6*cos(phi5(k)),r7*cos(phi6(k)),0,0,0,0,0,0;
+          0,0,0,0,-r9*sin(phi9(k)),-r10*sin(phi10(k)),-r11*sin(phi11(k)),0,0,0;
+          0,0,0,0,r9*cos(phi9(k)),r10*cos(phi10(k)),r11*cos(phi11(k)),0,0,0];
     
-      C = [r2*cos(phi1(k))*dphi1(k)^2+r2*sin(phi1(k))*ddphi1(k)-r3*cos(phi2(k))*dphi2(k)^2;
+      B = [r2*cos(phi1(k))*dphi1(k)^2+r2*sin(phi1(k))*ddphi1(k)-r3*cos(phi2(k))*dphi2(k)^2;
           -r2*cos(phi1(k))*ddphi1(k)+r2*sin(phi1(k))*dphi1(k)^2-r3*sin(phi2(k))*dphi2(k)^2;
           -dphi3(k)^2*r4(k)*cos(phi3(k))-dphi3(k)*sin(phi3(k))*dr4(k)-dr4(k)*dphi3(k)*sin(phi3(k));
-          dphi3(k)^2*r4(k)*sin(phi3(k))+dphi3(k)*cos(phi3(k))*dr4(k)+dr4(k)*dphi3(k)*cos(phi3(k));
+          -dphi3(k)^2*r4(k)*sin(phi3(k))+dphi3(k)*cos(phi3(k))*dr4(k)+dr4(k)*dphi3(k)*cos(phi3(k));
           -dphi8(k)^2*r8(k)*cos(phi8(k))-dphi8(k)*sin(phi8(k))*dr8(k)-dr8(k)*dphi8(k)*sin(phi8(k));
-          dphi8(k)^2*r8(k)*sin(phi8(k))+dphi8(k)*cos(phi8(k))*dr8(k)+dr8(k)*dphi8(k)*cos(phi8(k));
+          -dphi8(k)^2*r8(k)*sin(phi8(k))+dphi8(k)*cos(phi8(k))*dr8(k)+dr8(k)*dphi8(k)*cos(phi8(k));
           r5*cos(phi4(k))*dphi3(k)^2+r6*cos(phi5(k))*dphi5(k)^2+r7*cos(phi6(k))*dphi6(k)^2;
           r5*sin(phi4(k))*dphi3(k)^2+r6*sin(phi5(k))*dphi5(k)^2+r7*sin(phi6(k))*dphi6(k)^2;
           r9*cos(phi9(k))*dphi8(k)^2+r10*cos(phi10(k))*dphi10(k)^2+r11*cos(phi11(k))*dphi11(k)^2;
           r9*sin(phi9(k))*dphi8(k)^2+r10*sin(phi10(k))*dphi10(k)^2+r11*sin(phi11(k))*dphi11(k)^2
           ];
     
-    x = A\C;
+    x = A\B;
     % save results
     ddphi2(k)=x(1);
     ddphi3(k)=x(2);
@@ -180,10 +189,10 @@ end % loop over positions
 % point P = fixed
 A = 0;
 % point S = fixed
-D = A +0.007746*exp(j*-63.14*pi/180);
-G = A +0.010983*exp(j*-71.4166*pi/180);
-H = A -0.007746*exp(j*63.14*pi/180);
-K = A -0.010983*exp(j*71.4166*pi/180);
+D = A +sqrt(0.0035^2+0.00691^2)*exp(j*+(acosd(0.00691/(sqrt(0.0035^2+0.00691^2)))-90)*pi/180);
+G = A +sqrt(0.0035^2+(0.00691+0.0035)^2)*exp(j*+(acosd((0.00691+0.0035)/sqrt(0.0035^2+(0.00691+0.0035)^2))-90)*pi/180);
+H = A -sqrt(0.0035^2+0.00691^2)*exp(j*-(acosd(0.00691/sqrt(0.0035^2+0.00691^2))-90)*pi/180);
+K = A -sqrt(0.0035^2+(0.00691+0.0035)^2)*exp(j*-(acosd((0.00691+0.0035)/sqrt(0.0035^2+(0.00691+0.0035)^2))-90)*pi/180);
 
 
 % define which positions we want as frames in our movie
@@ -234,8 +243,26 @@ end
 % save movie
 save fourbar_movie Movie
 close(10)
+if fig_kin_4bar
+    
+    %plot assembly at a certain timestep 
+    B = A + r2 * exp(j*phi1(1));
+    C = B - r3 * exp(j*phi2(1));
+    
+    E = D + r5*exp(j*phi4(1));
+    F = G + r7*exp(j*(phi6(1)-pi));
 
-
+    I = H +r9*exp(j*phi9(1));
+    J = K + r11*exp(j*(phi11(1)-pi));%select 1st timestep
+    
+    figure
+    assembly=[A B C D E F G F E D C H I J K];
+    plot(real(assembly),imag(assembly),'ro-')
+    xlabel('[m]')
+    ylabel('[m]')
+    title('assembly')
+    axis equal
+end
 % *** plot figures ***
     figure('Name','Position: \phi_2 - \r13')
     subplot(4,3,1)
@@ -377,41 +404,39 @@ close(10)
     F_check2 = zeros(t_size,1);
     f = zeros(t_size,1);
     l = zeros(t_size,1);
-    q = zeros(t_size,1);
+    c = zeros(t_size,1);
     for i=1:t_size
         F_check2(i) = (D + r5*exp(j*phi4(i))+r6*exp(j*phi5(i))) - (G + r7*exp(j*(phi6(i)-pi)));
         f(i) = (D + r5*exp(j*phi4(i))+r6*exp(j*phi5(i)));
     end
-    L_check2 = zeros(t_size,1);
+    I_check2 = zeros(t_size,1);
     for i=1:t_size
-        L_check2(i) =(K + r11*exp(j*(phi11(i)-pi)) + r10*exp(j*(phi10(i)+pi))) -(H +r9*exp(j*phi9(i))) ;
+        I_check2(i) =(K + r11*exp(j*(phi11(i)-pi)) + r10*exp(j*(phi10(i)+pi))) -(H +r9*exp(j*phi9(i))) ;
         l(i) = (K + r11*exp(j*(phi11(i)-pi)) + r10*exp(j*(phi10(i)+pi)));
     end
-    Q_check2 = zeros(t_size,1);
+    C_check2 = zeros(t_size,1);
     for i=1:t_size
-        Q_check2(i) =(A + r2*exp(j*phi1(i)) - r3*exp(j*phi2(i))) -(D + r4(i)*exp(j*(phi3(i)+pi)));
-        q(i) = (r2 * exp(j*phi1(i)) - r3*exp(j*phi2(i)));
+        C_check2(i) =(A + r2*exp(j*phi1(i)) - r3*exp(j*phi2(i))) -(D + r4(i)*exp(j*(phi3(i)+pi)));
+        c(i) = (r2 * exp(j*phi1(i)) - r3*exp(j*phi2(i)));
     end
     t1 = t(2:end);      % eerste waarde eruit
     F_check2 = F_check2(2:end,:);
-    L_check2 = L_check2(2:end,:);
-    Q_check2 = Q_check2(2:end,:);
+    I_check2 = I_check2(2:end,:);
+    C_check2 = C_check2(2:end,:);
     f1 = f(2:end,:);
     l1 = l(2:end,:);
-    q1 = q(2:end,:);
+    c1 = c(2:end,:);
     figure('Name','Position control for d, l, q via different paths')
     subplot(321)
-    %plot(t,abs(D_check))
     plot(t1,abs(F_check2))
     xlabel('t [s]') 
     ylabel('absolute error d [m]') 
     subplot(323)
-    %plot(t,abs(L_check))
-    plot(t1,abs(L_check2))
+    plot(t1,abs(I_check2))
     xlabel('t [s]') 
     ylabel('absolute error l [m]') 
     subplot(325)
-    plot(t1,abs(Q_check2))
+    plot(t1,abs(C_check2))
     xlabel('t [s]') 
     ylabel('absolute error c [m]') 
     subplot(322)
@@ -419,13 +444,11 @@ close(10)
     xlabel('t [s]') 
     ylabel('relative error d []')
     subplot(324)
-    %plot(t,abs(L_check))
-    plot(t1,abs(L_check2)./abs(l1))
+    plot(t1,abs(I_check2)./abs(l1))
     xlabel('t [s]') 
     ylabel('relative error l []') 
     subplot(326)
-    %plot(t,abs(L_check))
-    plot(t1,abs(Q_check2)./abs(q1))
+    plot(t1,abs(C_check2)./abs(c1))
     xlabel('t [s]') 
     ylabel('relative error c []') 
     
@@ -449,20 +472,20 @@ close(10)
     dphi11_check = dphi11-dphi11_control;
     dphi3_check = dphi3 - dphi3_control;
     
-    figure('Name','Velocity control for bar 8, 14, 5 with numerical differentiation')
+    figure('Name','Velocity control for bar 6, 11, 4 with numerical differentiation')
     subplot(321)
     plot(t,dphi5_check)
     xlabel('t [s]')
-    ylabel('absolute error \omega_8 [rad/s]')
+    ylabel('absolute error \omega_5 [rad/s]')
     subplot(323)
     plot(t,dphi11_check)
     xlabel('t [s]')
-    ylabel('absolute error \omega_1_4 [rad/s]')
+    ylabel('absolute error \omega_11 [rad/s]')
     subplot(325)
     xlabel('t [s]')
     plot(t1,dphi3_check(2:end))
     xlabel('t [s]')
-    ylabel('absolute error \omega_5_b [rad/s]')
+    ylabel('absolute error \omega_3 [rad/s]')
     subplot(322)
     xlabel('t [s]')
     plot(t,dphi11_check./dphi11)
@@ -480,7 +503,7 @@ close(10)
     ylabel('relative error \omega_5_b []')       
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-    text(0.5, 1,'\bf Velocity control for bar 8, 14, 5 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
+    text(0.5, 1,'\bf Velocity control for bar 6, 11, 4 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
     
@@ -496,39 +519,201 @@ close(10)
     
     ddphi5_check = ddphi5-ddphi5_control;
     ddphi11_check = ddphi11-ddphi11_control;
-    ddphi3_check = ddphi3 - ddphi3_control;
+    ddphi3_check = ddphi3-ddphi3_control;
     
-    figure('Name','Acceleration control for bar 8, 14, 5 with numerical differentiation')
+    figure('Name','Acceleration control for bar 6, 11, 4 with numerical differentiation')
     subplot(321)
     plot(t,ddphi5_check)
     xlabel('t [s]')
-    ylabel('absolute error \alpha_8 [rad/s^2] ')
+    ylabel('absolute error \alpha_5 [rad/s^2] ')
     subplot(323)
     plot(t,ddphi11_check)
     xlabel('t [s]')
-    ylabel('absolute error \alpha_1_4 [rad/s^2] ')
+    ylabel('absolute error \alpha_11 [rad/s^2] ')
     subplot(325)    
     plot(t1,ddphi3_check(2:end))
     xlabel('t [s]')
-    ylabel('absolute error \alpha_5_b [rad/s^2] ')
+    ylabel('absolute error \alpha_3[rad/s^2] ')
     subplot(322)
     plot(t,ddphi5_check./ddphi5)
     xlabel('t [s]')
-    ylabel('relative error \alpha_8 [] ')
+    ylabel('relative error \alpha_5 [] ')
     subplot(324)
     plot(t,ddphi11_check./ddphi11)
     xlabel('t [s]')
-    ylabel('relative error \alpha_1_4 [] ')
+    ylabel('relative error \alpha_11 [] ')
     subplot(326)
     plot(t,ddphi3_check./ddphi3)
     xlabel('t [s]')
-    ylabel('relative error \alpha_5_b [] ')
+    ylabel('relative error \alpha_3 [] ')
 
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
     text(0.5, 1,'\bf Acceleration control for bar 8, 14, 5 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
+%     
+%   for i=1:t_size  
+%   r2_vec=   [r2*cos(phi1)                   r2*sin(phi1)                zeros(size(phi1))];
+%   r3_vec=   [r3*cos(phi2)                   r3*sin(phi2)                zeros(size(phi1))];
+%   r4_vec=   [r4(i)*cos(phi3)                   r4(i)*sin(phi3)                zeros(size(phi1))];
+%   r5_vec=   [r5*cos(phi3 + gamma)           r5*sin(phi3 + gamma)        zeros(size(phi1))];
+%   r6_vec=   [r6*cos(2*pi - phi5)                   r6*sin(2*pi -phi5)                zeros(size(phi1))];
+%   r7_vec=   [r7*cos(phi6 -pi)                   r7*sin(phi6 -pi)                zeros(size(phi1))];
+%   r8_vec=   [r8(i)*cos(phi8)                   r8(i)*sin(phi8)                zeros(size(phi1))];
+%   r9_vec=   [r9*cos(phi3 +2*pi - gamma)     r9*sin(phi3 + 2*pi - gamma) zeros(size(phi1))];
+%   r10_vec=   [r10*cos(phi10)                 r10*sin(phi10)              zeros(size(phi1))];
+%   r11_vec=   [r11*cos(phi11)                 r11*sin(phi11)              zeros(size(phi1))];
+%   end
+%   %Hoeksnelheden als vectoren
+%   omega1 = [zeros(size(phi1))       zeros(size(phi1))   dphi1];
+%   omega2 = [zeros(size(phi1))       zeros(size(phi1))   dphi2];
+%   omega3 = [zeros(size(phi1))       zeros(size(phi1))   dphi3];
+%   omega5 = [zeros(size(phi1))       zeros(size(phi1))   dphi5];
+%   omega6 = [zeros(size(phi1))       zeros(size(phi1))   dphi6];
+%   omega8 = [zeros(size(phi1))       zeros(size(phi1))   dphi8];
+%   omega10 = [zeros(size(phi1))       zeros(size(phi1))   dphi10];
+%   omega11= [zeros(size(phi1))       zeros(size(phi1))   dphi11];
+%   %Hoekversnellingen als vectoren
+%   alpha1 = [zeros(size(phi1))       zeros(size(phi1))   ddphi1];
+%   alpha2 = [zeros(size(phi1))       zeros(size(phi1))   ddphi2];
+%   alpha3 = [zeros(size(phi1))       zeros(size(phi1))   ddphi3];
+%   alpha5 = [zeros(size(phi1))       zeros(size(phi1))   ddphi5];
+%   alpha6 = [zeros(size(phi1))       zeros(size(phi1))   ddphi6];
+%   alpha8 = [zeros(size(phi1))       zeros(size(phi1))   ddphi8];
+%   alpha10 = [zeros(size(phi1))       zeros(size(phi1))   ddphi10];
+%   alpha11 = [zeros(size(phi1))       zeros(size(phi1))   ddphi11];
+%   
+    %Positie Controle
+  %De posities van enkele punten worden op twee verschillende manieren
+  %uitgerekend en vergeleken
+%   
+%   %Punt D
+%   p_E_1 = r5_vec
+%   display r5_vec;
+%   p_E_2 = r7_vec-r6_vec
+%   display p_E_2;
+%   p_E_diff = p_E_1-p_E_2
+%   display P_E_diff;
+%   p_E_check=sqrt(p_E_diff(:,1).^2+p_E_diff(:,2).^2);
+%   
+%   %Punt E
+%   p_E_1 = r1_vec+r4_vec+r7_vec;
+%   p_E_2 = r2_vec+r6_vec+r8_vec;
+%   p_E_diff = p_E_1-p_E_2;
+%   p_E_check=sqrt(p_E_diff(:,1).^2+p_E_diff(:,2).^2);
+%   
+%   %Punt F
+%   p_F_1 = r1_vec+r3_vec;
+%   p_F_2 = r2_vec+r6_vec;
+%   p_F_diff = p_F_1-p_F_2;
+%   p_F_check=sqrt(p_F_diff(:,1).^2+p_F_diff(:,2).^2);
+  
+  %Uitzetten van de verschillen tussen de berekende locaties van de punten 
+%   figure
+%   subplot(1,3,1)
+%   plot(t,p_E_check)
+%   ylabel('\Delta_p_D [m]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   subplot(1,3,2)
+%   plot(t,p_E_check)
+%   ylabel('\Delta_p_E [m]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   subplot(1,3,3)
+%   plot(t,p_F_check)
+%   ylabel('\Delta_p_F [m]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   %SnelheidsControle
+%   %Gelijkaardig aan de positiecontrole in concept maar nu worden de
+%   %snelheden van punten vergeleken en niet hun posities
+%   
+%   %Punt D
+%   v_D_1=    cross(omega4,r4_vec);
+%   v_D_2=    cross(omega2,r2_vec)+cross(omega5,r5_vec);
+%   v_D_diff = v_D_1-v_D_2;
+%   v_D_check=sqrt(v_D_diff(:,1).^2+v_D_diff(:,2).^2);
+%   
+%   %Punt E
+%   v_E_1=    cross(omega3,r3_vec)+cross(omega8,r8_vec);
+%   v_E_2=    cross(omega4,r4_vec)+cross(omega7,r7_vec);
+%   v_E_diff = v_E_1-v_E_2;
+%   v_E_check=sqrt(v_E_diff(:,1).^2+v_E_diff(:,2).^2);
+%   
+%   %Punt F
+%   v_F_1=    cross(omega3,r3_vec);
+%   v_F_2=    cross(omega2,r2_vec)+cross(omega6,r6_vec);
+%   v_F_diff = v_F_1-v_F_2;
+%   v_F_check=sqrt(v_F_diff(:,1).^2+v_F_diff(:,2).^2);
+%   
+%   %Uitzetten van de verschillen tussen de berekende snelheden van de punten 
+%   figure
+%   subplot(1,3,1)
+%   plot(t,v_D_check)
+%   ylabel('\Delta_v_D [m/s]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   subplot(1,3,2)
+%   plot(t,v_E_check)
+%   ylabel('\Delta_v_E [m/s]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   subplot(1,3,3)
+%   plot(t,v_F_check)
+%   ylabel('\Delta_v_F [m/s]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   %Versnellingsanalyse
+%   %Gelijkardig als bij de snelheidsanalyse wordt hier de versnelling
+%   %gecontroleerd door hem te berekenen op twee verschillende manieren en
+%   %het verschil uit te zetten in functie van phi2
+%   
+%   %Punt D
+%   a_D_1=    cross(alpha4,r4_vec)+cross(omega4,cross(omega4,r4_vec));
+%   a_D_2=    cross(alpha2,r2_vec)+cross(omega2,cross(omega2,r2_vec))+cross(alpha5,r5_vec)+cross(omega5,cross(omega5,r5_vec));
+%   a_D_diff = a_D_1-a_D_2;
+%   a_D_check=sqrt(a_D_diff(:,1).^2+a_D_diff(:,2).^2);
+%   
+%   %Punt E
+%   a_E_1=    cross(alpha4,r4_vec)+cross(omega4,cross(omega4,r4_vec))+cross(alpha7,r7_vec)+cross(omega7,cross(omega7,r7_vec));
+%   a_E_2=    cross(alpha3,r3_vec)+cross(omega3,cross(omega3,r3_vec))+cross(alpha8,r8_vec)+cross(omega8,cross(omega8,r8_vec));
+%   a_E_diff = a_E_1-a_E_2;
+%   a_E_check=sqrt(a_E_diff(:,1).^2+a_E_diff(:,2).^2);
+%   
+%   %Punt F
+%   a_F_1=    cross(alpha3,r3_vec)+cross(omega3,cross(omega3,r3_vec));
+%   a_F_2=    cross(alpha2,r2_vec)+cross(omega2,cross(omega2,r2_vec))+cross(alpha6,r6_vec)+cross(omega6,cross(omega6,r6_vec));
+%   a_F_diff = a_F_1-a_F_2;
+%   a_F_check=sqrt(a_F_diff(:,1).^2+a_F_diff(:,2).^2);
+%   
+%   %Uitzetten van de verschillen tussen de berekende versnellingen van de punten
+%   figure
+%   subplot(1,3,1)
+%   plot(t,a_D_check)
+%   ylabel('\Delta_a_D [m/s²]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   subplot(1,3,2)
+%   plot(t,a_E_check)
+%   ylabel('\Delta_a_E [m/s²]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+%   
+%   subplot(1,3,3)
+%   plot(t,a_F_check)
+%   ylabel('\Delta_a_F [m/s²]')
+%   xlabel('t [s]')
+%   xlim([0 20*pi])
+  
 
 
 
