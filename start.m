@@ -116,11 +116,11 @@ r8_init = 0.00350;
 
 t_begin = 0;                   % start time of simulation
 t_end = 10;                    % end time of simulation
-Ts = 0.01;                     % time step of simulation
+Ts = 0.05;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
-omega = 1;                   % omega = 145
+omega = 0.5;                   % omega = 145
 phi2=omega*t+(359*pi/180);
 tijdsvec = size(t);
 dphi2=ones(tijdsvec(1),1).*omega; % ten allen tijde omega

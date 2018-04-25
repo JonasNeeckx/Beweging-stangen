@@ -310,7 +310,7 @@ ddphi9 = ddphi8;
     ylabel('\phi_11 [rad]')
     xlabel('t [s]')
     subplot(4,1,2)
-    plot(t,phi10)
+    plot(t,r4)
     ylabel('r4 [m]')
     xlabel('t [s]')
     subplot(4,1,3)

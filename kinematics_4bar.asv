@@ -86,7 +86,7 @@ for k=1:t_size
     r4(k)=x(9);
     r8(k)=x(10);
     
-    phi5(k) = phi5(k) + gamma;
+    phi5(k) = phi4(k) + gamma;
     phi9(k) = phi8(k) + 2*pi - gamma;
     
     % *** velocity analysis ***
@@ -243,26 +243,31 @@ K = A -sqrt(0.0035^2+(0.00691+0.0035)^2)*exp(j*-(acosd((0.00691+0.0035)/sqrt(0.0
 % save fourbar_movie Movie;
 % close(10);
 
-if fig_kin_4bar
-    
-    %plot assembly at a certain timestep 
-    B = A + r2 * exp(j*phi2(1));
-    C = B - r3 * exp(j*phi3(1));
-    
-    E = D + r5*exp(j*phi5(1));
-    F = G + r7*exp(j*(phi7(1)-pi));
+% if fig_kin_4bar
+%     
+%     %plot assembly at a certain timestep 
+%     B = A + r2 * exp(j*phi2(1));
+%     C = B - r3 * exp(j*phi3(1));
+%     
+%     E = D + r5*exp(j*phi5(1));
+%     F = G + r7*exp(j*(phi7(1)-pi));
+% 
+%     I = H +r9*exp(j*phi9(1));
+%     J = K + r11*exp(j*(phi11(1)-pi));
+%     
+%     figure
+%     assembly=[A B C D E F G F E D C H I J K];
+%     plot(real(assembly),imag(assembly),'ro-')
+%     xlabel('[m]')
+%     ylabel('[m]')
+%     title('assembly')
+%     axis equal
+% end
 
-    I = H +r9*exp(j*phi9(1));
-    J = K + r11*exp(j*(phi11(1)-pi));
-    
-    figure
-    assembly=[A B C D E F G F E D C H I J K];
-    plot(real(assembly),imag(assembly),'ro-')
-    xlabel('[m]')
-    ylabel('[m]')
-    title('assembly')
-    axis equal
-end
+dphi5 = dphi4;
+ddphi5 = ddphi4;
+dphi9 = dphi8;
+ddphi9 = ddphi8;
 % *** plot figures ***
     figure('Name','Position: \phi_2 - \phi_10')
     subplot(3,3,1)
@@ -305,7 +310,7 @@ end
     ylabel('\phi_11 [rad]')
     xlabel('t [s]')
     subplot(4,1,2)
-    plot(t,phi10)
+    plot(t,r4)
     ylabel('r4 [m]')
     xlabel('t [s]')
     subplot(4,1,3)
@@ -435,7 +440,7 @@ end
     c = zeros(t_size,1);
     for i=1:t_size
         F_check(i) = (D + r5*exp(j*phi5(i))+r6*exp(j*phi6(i))) - (G + r7*exp(j*(phi7(i)-pi)));
-        f(i) = (D + r5*exp(j*phi5(i))+r6*exp(j*phi6(i)));
+        epsf(i) = (D + r5*exp(j*phi5(i))+r6*exp(j*phi6(i)));
     end
     I_check = zeros(t_size,1);
     for i=1:t_size
@@ -605,12 +610,12 @@ end
     xlabel('t [s]')
     ylabel('relative error v_f [] ')
     
-    %     versnellingscontrole via meerdere paden
-    alpha5 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
-    alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi7];
-    alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
-    aF = cross(omega5,cross(omega5,D_E_vect)) + cross(omega5,cross(omega5,E_F_vect)) + cross(alpha4,D_E_vect) + cross(alpha5,E_F_vect);
-    aF_check = cross(omega6,cross(omega6,G_F_vect)) + cross(alpha6,G_F_vect);
+    % ACCELERATION CONTROL USING MULTIPLE POINTS
+    alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
+    alpha7 = [zeros(size(phi2)) zeros(size(phi2)) ddphi7];
+    alpha5 = [zeros(size(phi2)) zeros(size(phi2)) ddphi5];
+    aF = cross(omega5,cross(omega5,D_E_vect)) + cross(omega6,cross(omega6,E_F_vect)) + cross(alpha5,D_E_vect) + cross(alpha6,E_F_vect);
+    aF_check = cross(omega7,cross(omega7,G_F_vect)) + cross(alpha7,G_F_vect);
     aF_diff = zeros(length(aF),1);
     for i=1:length(aF)
         aF_diff(i) = norm(aF(i,:)) - norm(aF_check(i,:));
