@@ -43,13 +43,9 @@ r811y = 0.0035;
 % dynamic parameters, defined in a local frame on each of the bars.
 % the centre of gravity of bar 8 and 4 are calculated with respect to their
 % maximal lenght, instead of the varying length r8 and r4.
-<<<<<<< HEAD
-rmax4 = sqrt(r14x^2 + (-r14y + r2 + r3)^2);
-rmax8 = sqrt(r18x^2 + (-r18y + r2 + r3)^2);
-=======
+
 rmax4 = sqrt(r14x^2 + (r14y - r2 - r3)^2);
 rmax8 = sqrt(r18x^2 + (r18y - r2 - r3)^2);
->>>>>>> f7486f3b246f37ddd08fff2f684c89a7256dba3b
 rwing = 0.06;
 
 X2 = r2/2;               % X coordinates of cog (centre of gravity)
@@ -79,15 +75,15 @@ Ywing = rwing/2;
 rho_link = 0.5;
 m2 = r2*rho_link;
 m3 = r3*rho_link;
-m4 = 0;%rmax4*rho_link;
-m5 = 0;%r5*rho_link;
-m6 = 0;%r6*rho_link;
-m7 = 0;%r7*rho_link;
-m8 = 0;%rmax8*rho_link;
-m9 = 0;%r9*rho_link;
-m10 = 0;%r10*rho_link;
-m11 =0;% r11*rho_link;
-mwing = 0;%rwing*rho_link;
+m4 = rmax4*rho_link;
+m5 = r5*rho_link;
+m6 = r6*rho_link;
+m7 = r7*rho_link;
+m8 = rmax8*rho_link;
+m9 = r9*rho_link;
+m10 = r10*rho_link;
+m11 = r11*rho_link;
+mwing = rwing*rho_link;
 
 %J4, J5, J8 and J9 are defined with respect to their fixed point
 %For J6 and J10 the inertia of the wing is taken into account
