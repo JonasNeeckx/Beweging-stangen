@@ -49,7 +49,7 @@ rmax8 = sqrt(r18x^2 + (r18y - r2 - r3)^2);
 rwing = 0.06;
 
 X2 = r2/2;               % X coordinates of cog (centre of gravity)
-X3 = r3/3;
+X3 = r3/2;
 X4 = rmax4/2;
 X5 = r5/2;
 X6 = r6/2;
@@ -68,7 +68,7 @@ Y6 = -rwing^2/(2*(rwing+r6));
 Y7 = 0;
 Y8 = 0;
 Y9 = 0;
-Y10 = rwing^2/(2*(rwing+r6));
+Y10 = rwing^2/(2*(rwing+r10));
 Y11 = 0;
 Ywing = rwing/2;
 
