@@ -74,15 +74,15 @@ Ywing = rwing/2;
 rho_link = 0.5;
 m2 = r2*rho_link;
 m3 = r3*rho_link;
-m4 = rmax4*rho_link;
-m5 = r5*rho_link;
-m6 = r6*rho_link;
-m7 = r7*rho_link;
-m8 = rmax8*rho_link;
-m9 = r9*rho_link;
-m10 = r10*rho_link;
-m11 = r11*rho_link;
-mwing = rwing*rho_link;
+m4 = 0;%rmax4*rho_link;
+m5 = 0;%r5*rho_link;
+m6 = 0;%r6*rho_link;
+m7 = 0;%r7*rho_link;
+m8 = 0;%rmax8*rho_link;
+m9 = 0;%r9*rho_link;
+m10 = 0;%r10*rho_link;
+m11 =0;% r11*rho_link;
+mwing = 0;%rwing*rho_link;
 
 %J4, J5, J8 and J9 are defined with respect to their fixed point
 %For J6 and J10 the inertia of the wing is taken into account
@@ -115,7 +115,7 @@ r8_init = 0.00350;
 
 t_begin = 0;                   % start time of simulation
 t_end = 10;                    % end time of simulation
-Ts = 0.001;                     % time step of simulation
+Ts = 0.01;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver

@@ -35,15 +35,6 @@ ddphi4 = ddphi3;
 dphi9 = dphi8;
 ddphi9 = ddphi8;
 
-%The masses and moments of inertia of bonded links are added
-%together
-J45 = J4 + J5;
-J89 = J8 + J9;
-m45 = m4 + m5;
-m89 = m8 + m9;
-m6wing = m6 + mwing;
-m10wing = m10 + mwing;
-
 %Thrust on the wing (simplified to a force in the middle of the wing)
 F_wing = 0;% 0.12;
 
@@ -85,6 +76,19 @@ d_ED_x = -r5*cos(phi4);
 d_ED_y = -r5*sin(phi4);
 d_IH_x = -r9*cos(phi9);
 d_IH_y = -r9*sin(phi9);
+
+%The masses and moments of inertia of bonded links are added
+%together
+m45 = m4 + m5;
+m89 = m8 + m9;
+m6wing = m6 + mwing;
+m10wing = m10 + mwing;
+J45 = J4 + J5;
+J45cog = J45 + m45*(cog45_D_x.^2+cog45_D_y.^2);
+J45cog = J45cog(1);
+J89 = J8 + J9;
+J89cog = J89 + m89*(cog89_H_x.^2+cog89_H_y.^2);
+J89cog = J89cog(1);
 
 % 3D omega (dphi) and alpha (ddphi) vectors)
 omega1 = [zeros(size(phi2)) zeros(size(phi2)) dphi1];
@@ -200,7 +204,7 @@ for k=1:t_size
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0   0;
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0;
         cog2_A_y(k) -cog2_A_x(k) -cog2_B_y(k) cog2_B_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1;
-        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) cog3_C_y(k)*sin(phi3(k))+cog3_C_x(k)*cos(phi3(k)) -cog3_C_y(k)*sin(phi8(k))-cog3_C_x(k)*cos(phi8(k))   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) 0 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0  -r4(k)   0   0   0  -d_ED_y(k)   d_ED_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   cog6_E_y(k) -cog6_E_x(k) -cog6_F_y(k) cog6_F_x(k)   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   cog7_F_y(k) -cog7_F_x(k) cog7_G_y(k) -cog7_G_x(k)   0   0   0   0   0   0   0   0   0;
@@ -298,18 +302,22 @@ vel_11x = vel_11(:,1);
 vel_11y = vel_11(:,2);
 
 M_A_Energy = zeros(size(phi2));
-F_Ax_Work = zeros(size(phi3));
+F_x_Work = zeros(size(phi3));
+F_y_Work = zeros(size(phi2));
 
 for k = 1:t_size
 M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k)*vel_3x(k) + acc_3y(k)*vel_3y(k))+...
     m45 * (acc_45x(k)*vel_45x(k) + acc_45y(k)*vel_45y(k))+m6wing * (acc_6x(k)*vel_6x(k) + acc_6y(k)*vel_6y(k))+...
     m7 * (acc_7x(k)*vel_7x(k) + acc_7y(k)*vel_7y(k))+m89 * (acc_89x(k)*vel_89x(k) + acc_89y(k)*vel_89y(k))+...
     m10wing * (acc_10x(k)*vel_10x(k) + acc_10y(k)*vel_10y(k))+m11 * (acc_11x(k)*vel_11x(k) + acc_11y(k)*vel_11y(k))+...
-    J2*dphi1(k)*ddphi1(k)+J3*dphi2(k)*ddphi2(k)+J45*dphi3(k)*ddphi3(k)+J6*dphi5(k)*ddphi5(k)+J7*dphi6(k)*ddphi6(k)+...
-    J89*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi1(k); 
+    J2*dphi1(k)*ddphi1(k)+J3*dphi2(k)*ddphi2(k)+J45cog*dphi3(k)*ddphi3(k)+J6*dphi5(k)*ddphi5(k)+J7*dphi6(k)*ddphi6(k)+...
+    J89cog*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi1(k); 
 
-F_Ax_Work(k) = m2*acc_2x(k) + m3*acc_3x(k) + m45*acc_45x(k) + m6*acc_6x(k) + ...
-    m7*acc_7x(k) + m89*acc_89x(k) + m10*acc_10x(k) + m11*acc_11x(k);
+F_x_Work(k) = m2*acc_2x(k) + m3*acc_3x(k) + m45*acc_45x(k) + m6wing*acc_6x(k) + ...
+    m7*acc_7x(k) + m89*acc_89x(k) + m10wing*acc_10x(k) + m11*acc_11x(k);
+
+F_y_Work(k) = m2*acc_2y(k) + m3*acc_3y(k) + m45*acc_45y(k) + m6wing*acc_6y(k) + ...
+    m7*acc_7y(k) + m89*acc_89y(k) + m10wing*acc_10y(k) + m11*acc_11y(k);
 end
 
 % **********************
@@ -402,13 +410,13 @@ if fig_dyn_4bar
     
     figure
     subplot(211)
-    plot(t,F_Ax_Work)
-    ylabel('F_Ax_control [N]')
+    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x-F_x_Work)
+    ylabel('F_x_control [N]')
     xlabel('t [s]')  
     
     subplot(212)
-    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x-F_Ax_Work)    
-    ylabel('F_x_control [N]')
+    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y-F_y_Work)    
+    ylabel('F_y_control [N]')
     xlabel('t [s]')
     
 end
