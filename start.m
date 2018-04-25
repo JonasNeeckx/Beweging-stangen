@@ -43,8 +43,13 @@ r811y = 0.0035;
 % dynamic parameters, defined in a local frame on each of the bars.
 % the centre of gravity of bar 8 and 4 are calculated with respect to their
 % maximal lenght, instead of the varying length r8 and r4.
+<<<<<<< HEAD
+rmax4 = sqrt(r14x^2 + (-r14y + r2 + r3)^2);
+rmax8 = sqrt(r18x^2 + (-r18y + r2 + r3)^2);
+=======
 rmax4 = sqrt(r14x^2 + (r14y - r2 - r3)^2);
 rmax8 = sqrt(r18x^2 + (r18y - r2 - r3)^2);
+>>>>>>> f7486f3b246f37ddd08fff2f684c89a7256dba3b
 rwing = 0.06;
 
 X2 = r2/2;               % X coordinates of cog (centre of gravity)
