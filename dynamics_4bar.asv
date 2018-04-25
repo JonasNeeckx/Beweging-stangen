@@ -91,39 +91,39 @@ J89cog = J89 + m89*(cog89_H_x.^2+cog89_H_y.^2);
 J89cog = J89cog(1);
 
 % 3D omega (dphi) and alpha (ddphi) vectors)
-omega1 = [zeros(size(phi1)) zeros(size(phi1)) dphi1];
-omega2 = [zeros(size(phi1)) zeros(size(phi1)) dphi2];
-omega3 = [zeros(size(phi1)) zeros(size(phi1)) dphi3];
-omega4 = [zeros(size(phi1)) zeros(size(phi1)) dphi4];
-omega5 = [zeros(size(phi1)) zeros(size(phi1)) dphi5];
-omega6 = [zeros(size(phi1)) zeros(size(phi1)) dphi6];
-omega8 = [zeros(size(phi1)) zeros(size(phi1)) dphi8];
-omega9 = [zeros(size(phi1)) zeros(size(phi1)) dphi9];
-omega10 = [zeros(size(phi1)) zeros(size(phi1)) dphi10];
-omega11 = [zeros(size(phi1)) zeros(size(phi1)) dphi11];
-alpha1 = [zeros(size(phi1)) zeros(size(phi1)) ddphi1];
-alpha2 = [zeros(size(phi1)) zeros(size(phi1)) ddphi2];
-alpha3 = [zeros(size(phi1)) zeros(size(phi1)) ddphi3];
-alpha4 = [zeros(size(phi1)) zeros(size(phi1)) ddphi4];
-alpha5 = [zeros(size(phi1)) zeros(size(phi1)) ddphi5];
-alpha6 = [zeros(size(phi1)) zeros(size(phi1)) ddphi6];
-alpha8 = [zeros(size(phi1)) zeros(size(phi1)) ddphi8];
-alpha9 = [zeros(size(phi1)) zeros(size(phi1)) ddphi9];
-alpha10 = [zeros(size(phi1)) zeros(size(phi1)) ddphi10];
-alpha11 = [zeros(size(phi1)) zeros(size(phi1)) ddphi11];
+omega1 = [zeros(size(phi2)) zeros(size(phi2)) dphi1];
+omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2];
+omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
+omega4 = [zeros(size(phi2)) zeros(size(phi2)) dphi4];
+omega5 = [zeros(size(phi2)) zeros(size(phi2)) dphi5];
+omega6 = [zeros(size(phi2)) zeros(size(phi2)) dphi6];
+omega8 = [zeros(size(phi2)) zeros(size(phi2)) dphi8];
+omega9 = [zeros(size(phi2)) zeros(size(phi2)) dphi9];
+omega10 = [zeros(size(phi2)) zeros(size(phi2)) dphi10];
+omega11 = [zeros(size(phi2)) zeros(size(phi2)) dphi11];
+alpha1 = [zeros(size(phi2)) zeros(size(phi2)) ddphi1];
+alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2];
+alpha3 = [zeros(size(phi2)) zeros(size(phi2)) ddphi3];
+alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
+alpha5 = [zeros(size(phi2)) zeros(size(phi2)) ddphi5];
+alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
+alpha8 = [zeros(size(phi2)) zeros(size(phi2)) ddphi8];
+alpha9 = [zeros(size(phi2)) zeros(size(phi2)) ddphi9];
+alpha10 = [zeros(size(phi2)) zeros(size(phi2)) ddphi10];
+alpha11 = [zeros(size(phi2)) zeros(size(phi2)) ddphi11];
 
 % 3D model vectors
-cog2_A_vec = [cog2_A_x      cog2_A_y        zeros(size(phi1))];
-AB_vec = [r2*cos(phi1)      r2*sin(phi1)    zeros(size(phi1))];
-cog3_B_vec = [cog3_B_x      cog3_B_y        zeros(size(phi1))];
-cog45_D_vec = [cog45_D_x    cog45_D_y       zeros(size(phi1))];
-DE_vec = [r5*cos(phi4)      r5*sin(phi4)    zeros(size(phi1))];
-cog6_E_vec = [cog6_E_x      cog6_E_y        zeros(size(phi1))];
-cog7_G_vec = [cog7_G_x      cog7_G_y        zeros(size(phi1))];
-cog89_H_vec = [cog89_H_x    cog89_H_y       zeros(size(phi1))];
-HI_vec = [r9*cos(phi9)      r9*sin(phi9)    zeros(size(phi1))];
-cog10_I_vec = [cog10_I_x    cog10_I_y       zeros(size(phi1))];
-cog11_K_vec = [cog11_K_x    cog11_K_y       zeros(size(phi1))];
+cog2_A_vec = [cog2_A_x      cog2_A_y        zeros(size(phi2))];
+AB_vec = [r2*cos(phi1)      r2*sin(phi1)    zeros(size(phi2))];
+cog3_B_vec = [cog3_B_x      cog3_B_y        zeros(size(phi2))];
+cog45_D_vec = [cog45_D_x    cog45_D_y       zeros(size(phi2))];
+DE_vec = [r5*cos(phi4)      r5*sin(phi4)    zeros(size(phi2))];
+cog6_E_vec = [cog6_E_x      cog6_E_y        zeros(size(phi2))];
+cog7_G_vec = [cog7_G_x      cog7_G_y        zeros(size(phi2))];
+cog89_H_vec = [cog89_H_x    cog89_H_y       zeros(size(phi2))];
+HI_vec = [r9*cos(phi9)      r9*sin(phi9)    zeros(size(phi2))];
+cog10_I_vec = [cog10_I_x    cog10_I_y       zeros(size(phi2))];
+cog11_K_vec = [cog11_K_x    cog11_K_y       zeros(size(phi2))];
 
 % acceleration vectors
 acc_2 = cross(omega1,cross(omega1,cog2_A_vec)) + cross(alpha1,cog2_A_vec);
@@ -159,30 +159,30 @@ acc_11y = acc_11(:,2);
 % *** force analysis ***
 % **********************
 % allocate matrices for force (F) and moment (M)
-F_A_x = zeros(size(phi1));
-F_A_y = zeros(size(phi1));
-F_23_x = zeros(size(phi1));
-F_23_y = zeros(size(phi1));
-F_C_x = zeros(size(phi1));
-F_34 = zeros(size(phi1));
-F_38 = zeros(size(phi1));
-F_D_x = zeros(size(phi1));
-F_D_y = zeros(size(phi1));
-F_56_x = zeros(size(phi1));
-F_56_y = zeros(size(phi1));
-F_67_x = zeros(size(phi1));
-F_67_y = zeros(size(phi1));
-F_G_x = zeros(size(phi1));
-F_G_y = zeros(size(phi1));
-F_H_x = zeros(size(phi1));
-F_H_y = zeros(size(phi1));
-F_910_x = zeros(size(phi1));
-F_910_y = zeros(size(phi1));
-F_1011_x = zeros(size(phi1));
-F_1011_y = zeros(size(phi1));
-F_K_x = zeros(size(phi1));
-F_K_y = zeros(size(phi1));
-M_A = zeros(size(phi1));
+F_A_x = zeros(size(phi2));
+F_A_y = zeros(size(phi2));
+F_23_x = zeros(size(phi2));
+F_23_y = zeros(size(phi2));
+F_C_x = zeros(size(phi2));
+F_34 = zeros(size(phi2));
+F_38 = zeros(size(phi2));
+F_D_x = zeros(size(phi2));
+F_D_y = zeros(size(phi2));
+F_56_x = zeros(size(phi2));
+F_56_y = zeros(size(phi2));
+F_67_x = zeros(size(phi2));
+F_67_y = zeros(size(phi2));
+F_G_x = zeros(size(phi2));
+F_G_y = zeros(size(phi2));
+F_H_x = zeros(size(phi2));
+F_H_y = zeros(size(phi2));
+F_910_x = zeros(size(phi2));
+F_910_y = zeros(size(phi2));
+F_1011_x = zeros(size(phi2));
+F_1011_y = zeros(size(phi2));
+F_K_x = zeros(size(phi2));
+F_K_y = zeros(size(phi2));
+M_A = zeros(size(phi2));
 
 % calculate dynamics for each time step
 t_size = size(t,1);    % number of simulation steps
@@ -204,7 +204,7 @@ for k=1:t_size
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0   0;
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0;
         cog2_A_y(k) -cog2_A_x(k) -cog2_B_y(k) cog2_B_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1;
-        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) 0 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) cog3_C_y(k)*sin(phi3(k))+cog3_C_x(k)*cos(phi3(k)) -cog3_C_y(k)*sin(phi8(k))-cog3_C_x(k)*cos(phi8(k))   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0  -r4(k)   0   0   0  -d_ED_y(k)   d_ED_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   cog6_E_y(k) -cog6_E_x(k) -cog6_F_y(k) cog6_F_x(k)   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   cog7_F_y(k) -cog7_F_x(k) cog7_G_y(k) -cog7_G_x(k)   0   0   0   0   0   0   0   0   0;
