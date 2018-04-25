@@ -72,7 +72,8 @@ Y10 = rwing^2/(2*(rwing+r6));
 Y11 = 0;
 Ywing = rwing/2;
 
-rho_link = 0.5;
+dbar = 2*10^-3;
+rho_link = 1800*pi*dbar^2/4;
 m2 = r2*rho_link;
 m3 = r3*rho_link;
 m4 = rmax4*rho_link;
@@ -93,8 +94,8 @@ J4 = m4*rmax4^2/12 + m4*X4^2;
 J5 = m5*r5^2/12 + m5*X5^2;
 J6 = m6*r6^2/12 + m6*Y6^2 + mwing*rwing^2/12 + mwing*(-rwing/2-Y6)^2;
 J7 = m7*r7^2/12;
-J8 = m8*rmax8^2/12;
-J9 = m9*r9^2/12;
+J8 = m8*rmax8^2/12 + m8*X8^2;
+J9 = m9*r9^2/12 + m9*X9^2;
 J10 = m10*r10^2/12 + m10*Y10^2 + mwing*rwing^2/12 + mwing*(rwing/2-Y10)^2;
 J11 = m11*r11^2/12;
 
@@ -115,12 +116,12 @@ r4_init = 0.00350;
 r8_init = 0.00350; 
 
 t_begin = 0;                   % start time of simulation
-t_end = 10;                    % end time of simulation
-Ts = 0.05;                     % time step of simulation
+t_end = 4/37;                    % end time of simulation
+Ts = 0.0001;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
-omega = 0.5;                   % omega = 145
+omega = 37*2*pi;                   % omega = 145
 phi2=omega*t+(359*pi/180);
 tijdsvec = size(t);
 dphi2=ones(tijdsvec(1),1).*omega; % ten allen tijde omega
@@ -138,6 +139,17 @@ ddphi2=zeros(tijdsvec(1),1); % ten allen tijde nul
 [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x, F_56_y, F_67_x, F_67_y,...
     F_G_x, F_G_y, F_H_x, F_H_y, F_910_x, F_910_y, F_1011_x, F_1011_y, F_K_x, F_K_y, M_A] = ...
     dynamics_4bar(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
+dphi2,dphi3,dphi4, dphi6, dphi7, dphi8, dphi10, dphi11,...
+ddphi2,ddphi3,ddphi4,ddphi6, ddphi7, ddphi8, ddphi10, ddphi11,...
+r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4,rmax8,...
+m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,mwing,...
+X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,Xwing,...
+Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Ywing,...
+J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_4bar);
+
+[F_A_x_bal, F_A_y_bal, F_23_x_bal, F_23_y_bal, F_C_x_bal, F_34_bal, F_38_bal, F_D_x_bal, F_D_y_bal, F_56_x_bal, F_56_y_bal, F_67_x_bal, F_67_y_bal,...
+    F_G_x_bal, F_G_y_bal, F_H_x_bal, F_H_y_bal, F_910_x_bal, F_910_y_bal, F_1011_x_bal, F_1011_y_bal, F_K_x_bal, F_K_y_bal, M_A_bal] = ...
+    dynamics_4bar_balanced(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
 dphi2,dphi3,dphi4, dphi6, dphi7, dphi8, dphi10, dphi11,...
 ddphi2,ddphi3,ddphi4,ddphi6, ddphi7, ddphi8, ddphi10, ddphi11,...
 r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4,rmax8,...

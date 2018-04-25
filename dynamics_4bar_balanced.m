@@ -14,7 +14,7 @@
 
 function [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x, F_56_y, F_67_x, F_67_y,...
     F_G_x, F_G_y, F_H_x, F_H_y, F_910_x, F_910_y, F_1011_x, F_1011_y, F_K_x, F_K_y, M_A] = ...
-dynamics_4bar(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
+dynamics_4bar_balanced(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
 dphi2,dphi3,dphi4, dphi6, dphi7, dphi8,  dphi10, dphi11,...
 ddphi2,ddphi3,ddphi4,ddphi6, ddphi7, ddphi8,  ddphi10, ddphi11,...
 r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4, rmax8, ...
@@ -39,8 +39,8 @@ ddphi9 = ddphi8;
 F_wing = 0;% 0.12;
 
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
-cog2_A_x = X2*cos(phi2);
-cog2_A_y = X2*sin(phi2);
+cog2_A_x = zeros(size(phi2));
+cog2_A_y = zeros(size(phi2));
 cog2_B_x = -X2*cos(phi2);
 cog2_B_y = -X2*sin(phi2);
 cog3_B_x = -X3*cos(phi3);
@@ -66,10 +66,10 @@ cog11_K_y = -X11*sin(phi11);
 
 %Define additional centers of gravity for the calculation of the
 %acceleration and rotation
-cog45_D_x = (-X4*cos(phi4)*rmax4 + X5*cos(phi5)*r5)/(rmax4+r5);
-cog45_D_y = (-X4*sin(phi4)*rmax4 + X5*sin(phi5)*r5)/(rmax4+r5);
-cog89_H_x = (-X8*cos(phi8)*rmax8 + X9*cos(phi9)*r9)/(rmax8+r9);
-cog89_H_y = (-X8*sin(phi8)*rmax8 + X9*sin(phi9)*r9)/(rmax8+r9);
+cog45_D_x = zeros(size(phi2));
+cog45_D_y = zeros(size(phi2));
+cog89_H_x = zeros(size(phi2));
+cog89_H_y = zeros(size(phi2));
 
 %Additional distances d_AB_i from point A to B over axis i
 d_ED_x = -r5*cos(phi5);
@@ -302,7 +302,6 @@ vel_11x = vel_11(:,1);
 vel_11y = vel_11(:,2);
 
 M_A_Energy = zeros(size(phi3));
-M_A_second_check = zeros(size(phi3));
 F_x_Work = zeros(size(phi4));
 F_y_Work = zeros(size(phi3));
 
@@ -313,8 +312,6 @@ M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k
     m10wing * (acc_10x(k)*vel_10x(k) + acc_10y(k)*vel_10y(k))+m11 * (acc_11x(k)*vel_11x(k) + acc_11y(k)*vel_11y(k))+...
     J2*dphi2(k)*ddphi2(k)+J3*dphi3(k)*ddphi3(k)+J45cog*dphi4(k)*ddphi4(k)+J6*dphi6(k)*ddphi6(k)+J7*dphi7(k)*ddphi7(k)+...
     J89cog*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi2(k); 
-
-M_A_second_check(k) = -F_23_x(k)*r2*sin(phi2(k))+F_23_y(k)*cos(phi2(k))*r2;
 
 F_x_Work(k) = m2*acc_2x(k) + m3*acc_3x(k) + m45*acc_45x(k) + m6wing*acc_6x(k) + ...
     m7*acc_7x(k) + m89*acc_89x(k) + m10wing*acc_10x(k) + m11*acc_11x(k);
@@ -330,102 +327,18 @@ end
 if fig_dyn_4bar
     
     figure
-    subplot(221)
-    plot(F_A_x,F_A_y),grid
-    xlabel('F_A_x [N]')
-    ylabel('F_A_y [N]')
-    axis tight
-    subplot(222)
-    plot(F_23_x,F_23_y),grid
-    xlabel('F_2_3_x [N]')
-    ylabel('F_2_3_y [N]')
-    axis tight
-    subplot(223)
-    plot(F_34,F_38),grid
-    xlabel('F_3_4 [N]')
-    ylabel('F_3_8[N]')
-    axis tight
-    subplot(224)
-    plot(F_C_x,zeros(size(phi3))),grid
-    xlabel('F_C_x [N]')
-    ylabel('F_C_y [N]')
-    axis tight
-    
-        figure
-    subplot(221)
-    plot(F_D_x,F_D_y),grid
-    xlabel('F_D_x [N]')
-    ylabel('F_D_y [N]')
-    axis tight
-    subplot(222)
-    plot(F_56_x,F_56_y),grid
-    xlabel('F_5_6_x [N]')
-    ylabel('F_5_6_y [N]')
-    axis tight
-    subplot(223)
-    plot(F_67_x,F_67_y),grid
-    xlabel('F_6_7_x [N]')
-    ylabel('F_6_7_y [N]')
-    axis tight
-    subplot(224)
-    plot(F_G_x,F_G_y),grid
-    xlabel('F_G_x [N]')
-    ylabel('F_G_y [N]')
-    axis tight
-    
-    figure
-    subplot(221)
-    plot(F_H_x,F_H_y),grid
-    xlabel('F_H_x [N]')
-    ylabel('F_H_y [N]')
-    axis tight
-    subplot(222)
-    plot(F_910_x,F_910_y),grid
-    xlabel('F_9_1_0_x [N]')
-    ylabel('F_9_1_0_y [N]')
-    axis tight
-    subplot(223)
-    plot(F_1011_x,F_1011_y),grid
-    xlabel('F_1_0_1_1_x [N]')
-    ylabel('F_1_0_1_1_y [N]')
-    axis tight
-    subplot(224)
-    plot(F_K_x,F_K_y),grid
-    xlabel('F_K_x [N]')
-    ylabel('F_K_y [N]')
-    axis tight    
-    
-    figure
-    subplot(221)
-    plot(t,M_A)
-    ylabel('M_A [N-m]')
-    xlabel('t [s]')
-    
-    subplot(222)
-    plot(t,M_A_Energy)
-    ylabel('M_A_control [N-m]')
-    xlabel('t [s]')    
-    
-    subplot(223)
-    plot(t,M_A-M_A_Energy)
-    ylabel('Error Energy method [N-m]')
-    xlabel('t [s]')
- 
-    subplot(224)
-    plot(t,M_A-M_A_second_check)
-    ylabel('Error Force calculation [N-m]')
-    xlabel('t [s]')
-    figure
-    
     subplot(211)
-    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x-F_x_Work)
-    ylabel('F_x_control [N]')
-    xlabel('t [s]')  
+    plot(F_A_x,F_A_y),grid
+    xlabel('F_A_x_balanced [N]')
+    ylabel('F_A_y_balanced [N]')
+    axis tight
+    
     
     subplot(212)
-    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y-F_y_Work)    
-    ylabel('F_y_control [N]')
-    xlabel('t [s]')
+    plot(t,M_A)
+    ylabel('M_A_balanced [N-m]')
+    xlabel('t [s]')  
+    
     
 end
 
