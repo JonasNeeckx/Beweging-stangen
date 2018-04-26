@@ -534,7 +534,7 @@ if fig_kin_check
     % VELOCITY CONTROL WITH NUMERICAL DIFFERENTIATION
     dphi6_control = diff(phi6)/Ts;
     dphi10_control = diff(phi10)/Ts;
-    dphi3_control = diff(phi4)/Ts;  
+    dphi3_control = diff(phi3)/Ts;  
     
     
     dphi6_control = [dphi6_control ; dphi6_control(end)];
@@ -559,12 +559,12 @@ if fig_kin_check
     plot(t,dphi3_check)
     xlabel('t [s]')
     ylabel('absolute error \omega_3 [rad/s]')
-    subplot(322)
+    subplot(324)
     xlabel('t [s]')
     plot(t,dphi10_check./dphi10)
     xlabel('t [s]')
     ylabel('relative error \omega_10 []')   
-    subplot(324)
+    subplot(322)
     xlabel('t [s]')
     plot(t,dphi6_check./dphi6)
     xlabel('t [s]')
