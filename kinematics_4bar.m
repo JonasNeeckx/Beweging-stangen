@@ -11,7 +11,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar);
+function [phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar,fig_kin_check);
 
 % allocation of the result vectors (this results in better performance because we don't have to reallocate and
 % copy the vector each time we add an element.
@@ -193,76 +193,76 @@ G = A +sqrt(0.0035^2+(0.00691+0.0035)^2)*exp(j*+(acosd((0.00691+0.0035)/sqrt(0.0
 H = A -sqrt(0.0035^2+0.00691^2)*exp(j*-(acosd(0.00691/sqrt(0.0035^2+0.00691^2))-90)*pi/180);
 K = A -sqrt(0.0035^2+(0.00691+0.0035)^2)*exp(j*-(acosd((0.00691+0.0035)/sqrt(0.0035^2+(0.00691+0.0035)^2))-90)*pi/180);
 
-% 
-% % define which positions we want as frames in our movie
-% frames = 200;    % number of frames in movie
-% delta = floor(t_size/frames); % time between frames
-% index_vec = [1:delta:t_size]';
-% 
-% % Create a window large enough for the whole mechanisme in all positions, to prevent scrolling.
-% % This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
-% % axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
-% % plots.
-% x_left = -0.015;
-% y_bottom = -0.015;
-% x_right = 0.015;
-% y_top = 0.005;
-% 
-% figure(10)
-% hold on
-% plot([x_left, x_right], [y_bottom, y_top]);
-% axis equal;
-% movie_axes = axis;   %save current axes into movie_axes
-% 
-% % draw and save movie frame
-% for m=1:length(index_vec)
-%     index = index_vec(m);
-%     B = A + r2 * exp(j*phi1(index));
-%     C = B - r3 * exp(j*phi2(index));
-%     
-%     E = D + r5*exp(j*phi4(index));
-%     F = G + r7*exp(j*(phi6(index)-pi));
-% 
-%     I = H +r9*exp(j*phi9(index));
-%     J = K + r11*exp(j*(phi11(index)-pi));
-%     loop = [A B C D E F G F E D C H I J K];
-%     figure(10)
-%     clf
-%     hold on
-%     plot(real(loop),imag(loop),'-o')
-%     
-%     axis(movie_axes);
-%     xlabel('x [m]')
-%     ylabel('y [m]')
-%     set(findobj('type','axes'),'xgrid','on')
-%     set(findobj('type','axes'),'ygrid','on')% set axes as in movie_axes
-%     Movie(m) = getframe;  % save frame to a variable Film
-% end
-% 
-% % save movie
-% save fourbar_movie Movie;
-% close(10);
 
-% if fig_kin_4bar
-%     
-%     %plot assembly at a certain timestep 
-%     B = A + r2 * exp(j*phi2(1));
-%     C = B - r3 * exp(j*phi3(1));
-%     
-%     E = D + r5*exp(j*phi5(1));
-%     F = G + r7*exp(j*(phi7(1)-pi));
-% 
-%     I = H +r9*exp(j*phi9(1));
-%     J = K + r11*exp(j*(phi11(1)-pi));
-%     
-%     figure
-%     assembly=[A B C D E F G F E D C H I J K];
-%     plot(real(assembly),imag(assembly),'ro-')
-%     xlabel('[m]')
-%     ylabel('[m]')
-%     title('assembly')
-%     axis equal
-% end
+% define which positions we want as frames in our movie
+frames = 200;    % number of frames in movie
+delta = floor(t_size/frames); % time between frames
+index_vec = [1:delta:t_size]';
+
+% Create a window large enough for the whole mechanisme in all positions, to prevent scrolling.
+% This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
+% axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
+% plots.
+x_left = -0.015;
+y_bottom = -0.015;
+x_right = 0.015;
+y_top = 0.005;
+
+figure(10)
+hold on
+plot([x_left, x_right], [y_bottom, y_top]);
+axis equal;
+movie_axes = axis;   %save current axes into movie_axes
+if fig_kin_4bar
+% draw and save movie frame
+for m=1:length(index_vec)
+    index = index_vec(m);
+    B = A + r2 * exp(j*phi2(index));
+    C = B - r3 * exp(j*phi3(index));
+    
+    E = D + r5*exp(j*phi5(index));
+    F = G + r7*exp(j*(phi7(index)-pi));
+
+    I = H +r9*exp(j*phi9(index));
+    J = K + r11*exp(j*(phi11(index)-pi));
+    loop = [A B C D E F G F E D C H I J K];
+    figure(10)
+    clf
+    hold on
+    plot(real(loop),imag(loop),'-o')
+    
+    axis(movie_axes);
+    xlabel('x [m]')
+    ylabel('y [m]')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on')% set axes as in movie_axes
+    Movie(m) = getframe;  % save frame to a variable Film
+end
+
+% save movie
+save fourbar_movie Movie;
+close(10);
+
+
+    
+    %plot assembly at a certain timestep 
+    B = A + r2 * exp(j*phi2(1));
+    C = B - r3 * exp(j*phi3(1));
+    
+    E = D + r5*exp(j*phi5(1));
+    F = G + r7*exp(j*(phi7(1)-pi));
+
+    I = H +r9*exp(j*phi9(1));
+    J = K + r11*exp(j*(phi11(1)-pi));
+    
+    figure
+    assembly=[A B C D E F G F E D C H I J K];
+    plot(real(assembly),imag(assembly),'ro-')
+    xlabel('[m]')
+    ylabel('[m]')
+    title('assembly')
+    axis equal
+
 
 dphi5 = dphi4;
 ddphi5 = ddphi4;
@@ -304,7 +304,13 @@ ddphi9 = ddphi8;
     ylabel('\phi_10 [rad]')
     xlabel('t [s]')
     
-    figure('Name','Position: \phi_11 - \r13')
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Position: \phi_2 - \phi_10','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on') 
+    
+    figure('Name','Position: \phi_11 - r13')
     subplot(4,1,1)
     plot(t,phi11)
     ylabel('\phi_11 [rad]')
@@ -321,6 +327,12 @@ ddphi9 = ddphi8;
     plot(t,r13)
     ylabel('r13 [m]')
     xlabel('t [s]')
+    
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Position: \phi_11 - r13','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on') 
     
     figure('Name','Velocity: d\phi_2 - d\phi_10')
     subplot(3,3,1)
@@ -360,6 +372,12 @@ ddphi9 = ddphi8;
     ylabel('d\phi_10 [rad/s]')
     xlabel('t [s]')
     
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Velocity: d\phi_2 - d\phi_10','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on') 
+    
     figure('Name','Velocity: d\phi_11 - dr13')
     subplot(4,1,1)
     plot(t,dphi11)
@@ -377,6 +395,12 @@ ddphi9 = ddphi8;
     plot(t,dr13)
     ylabel('dr13 [m/s]')
     xlabel('t [s]')
+    
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Velocity: d\phi_11 - dr13','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on') 
     
     figure('Name','Acceleration: dd\phi_2 - dd\phi_10')
     subplot(3,3,1)
@@ -416,6 +440,12 @@ ddphi9 = ddphi8;
     ylabel('dd\phi_10 [rad/s^2]')
     xlabel('t [s]')
     
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Acceleration: dd\phi_2 - dd\phi_10','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on') 
+    
     figure('Name','Acceleration: dd\phi_11 - ddr13')
     subplot(4,1,1)
     plot(t,ddphi11)
@@ -433,6 +463,16 @@ ddphi9 = ddphi8;
     plot(t,ddr13)
     ylabel('ddr13 [m/s^2]')
     xlabel('t [s]')
+    
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Acceleration: dd\phi_11 - ddr13','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on') 
+end
+
+if fig_kin_check
+    
 % POSITION CONTROL STARTING FROM DIFFERENT POINTS
     F_check = zeros(t_size,1);
     f = zeros(t_size,1);
@@ -493,37 +533,37 @@ ddphi9 = ddphi8;
     
     % VELOCITY CONTROL WITH NUMERICAL DIFFERENTIATION
     dphi6_control = diff(phi6)/Ts;
-    dphi11_control = diff(phi11)/Ts;
-    dphi4_control = diff(phi4)/Ts;  
+    dphi10_control = diff(phi10)/Ts;
+    dphi3_control = diff(phi4)/Ts;  
     
     
     dphi6_control = [dphi6_control ; dphi6_control(end)];
-    dphi11_control = [dphi11_control ; dphi11_control(end)];
-    dphi4_control = [dphi4_control ; dphi4_control(end)];  
+    dphi10_control = [dphi10_control ; dphi10_control(end)];
+    dphi3_control = [dphi3_control ; dphi3_control(end)];  
     
     dphi6_check = dphi6-dphi6_control;
-    dphi11_check = dphi11-dphi11_control;
-    dphi4_check = dphi4 - dphi4_control;
+    dphi10_check = dphi10-dphi10_control;
+    dphi3_check = dphi3 - dphi3_control;
     
-    figure('Name','Velocity control for bars 6, 11 and 4 with numerical differentiation')
+    figure('Name','Velocity control for phi 6, 10 and 3 with numerical differentiation')
     subplot(321)
     plot(t,dphi6_check)
     xlabel('t [s]')
     ylabel('absolute error \omega_6 [rad/s]')
     subplot(323)
-    plot(t,dphi11_check)
+    plot(t,dphi10_check)
     xlabel('t [s]')
-    ylabel('absolute error \omega_11 [rad/s]')
+    ylabel('absolute error \omega_10 [rad/s]')
     subplot(325)
     xlabel('t [s]')
-    plot(t1,dphi4_check(2:end))
+    plot(t,dphi3_check)
     xlabel('t [s]')
-    ylabel('absolute error \omega_4 [rad/s]')
+    ylabel('absolute error \omega_3 [rad/s]')
     subplot(322)
     xlabel('t [s]')
-    plot(t,dphi11_check./dphi11)
+    plot(t,dphi10_check./dphi10)
     xlabel('t [s]')
-    ylabel('relative error \omega_11 []')   
+    ylabel('relative error \omega_10 []')   
     subplot(324)
     xlabel('t [s]')
     plot(t,dphi6_check./dphi6)
@@ -531,63 +571,67 @@ ddphi9 = ddphi8;
     ylabel('relative error \omega_6 []')   
     subplot(326)
     xlabel('t [s]')
-    plot(t,dphi4_check./dphi4)
+    plot(t,dphi3_check./dphi3)
     xlabel('t [s]')
-    ylabel('relative error \omega_4 []')       
+    ylabel('relative error \omega_3 []')       
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-    text(0.5, 1,'\bf Velocity control for bar 6, 11 and 4 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
+    text(0.5, 1,'\bf Velocity control for phi 6, 10 and 3 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
     
     % ACCELERATION CONTROL WITH NUMERICAL DIFFERENTIATION
     ddphi6_control = diff(dphi6)/Ts;
-    ddphi11_control = diff(dphi11)/Ts;
-    ddphi4_control = diff(dphi4)/Ts;  
+    ddphi10_control = diff(dphi10)/Ts;
+    ddphi3_control = diff(dphi3)/Ts;  
     
     
     ddphi6_control = [ddphi6_control ; ddphi6_control(end)];
-    ddphi11_control = [ddphi11_control ; ddphi11_control(end)];
-    ddphi4_control = [ddphi4_control ; ddphi4_control(end)];  
+    ddphi10_control = [ddphi10_control ; ddphi10_control(end)];
+    ddphi3_control = [ddphi3_control ; ddphi3_control(end)];  
     
     ddphi6_check = ddphi6-ddphi6_control;
-    ddphi11_check = ddphi11-ddphi11_control;
-    ddphi4_check = ddphi4-ddphi4_control;
+    ddphi10_check = ddphi10-ddphi10_control;
+    ddphi3_check = ddphi3-ddphi3_control;
     
-    figure('Name','Acceleration control for bar 6, 11 and 4 with numerical differentiation')
+    figure('Name','Acceleration control for phi 6, 10 and 3 with numerical differentiation')
     subplot(321)
     plot(t,ddphi6_check)
     xlabel('t [s]')
     ylabel('absolute error \alpha_6 [rad/s^2] ')
     subplot(323)
-    plot(t,ddphi11_check)
+    plot(t,ddphi10_check)
     xlabel('t [s]')
-    ylabel('absolute error \alpha_11 [rad/s^2] ')
+    ylabel('absolute error \alpha_10 [rad/s^2] ')
     subplot(325)    
-    plot(t1,ddphi4_check(2:end))
+    plot(t,ddphi3_check)
     xlabel('t [s]')
-    ylabel('absolute error \alpha_4[rad/s^2] ')
+    ylabel('absolute error \alpha_3[rad/s^2] ')
     subplot(322)
     plot(t,ddphi6_check./ddphi6)
     xlabel('t [s]')
     ylabel('relative error \alpha_6 [] ')
     subplot(324)
-    plot(t,ddphi11_check./ddphi11)
+    plot(t,ddphi10_check./ddphi10)
     xlabel('t [s]')
-    ylabel('relative error \alpha_11 [] ')
+    ylabel('relative error \alpha_10 [] ')
     subplot(326)
-    plot(t,ddphi4_check./ddphi4)
+    plot(t,ddphi3_check./ddphi3)
     xlabel('t [s]')
-    ylabel('relative error \alpha_4 [] ')
+    ylabel('relative error \alpha_3 [] ')
 
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-    text(0.5, 1,'\bf Acceleration control for bar 8, 14, 5 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
+    text(0.5, 1,'\bf Acceleration control for phi 6, 10, 3 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
     
     % VELOCITY CONTROL USING MULTIPLE POINTS
     % F
+    dphi5=dphi4;
+    ddphi5=ddphi4;
+    dphi9=dphi8;
+    ddphi9=ddphi8;
     D_E_vect = [r5*cos(phi5) r5*sin(phi5) zeros(size(phi2))];
     E_F_vect = [r6*cos(phi6) r6*sin(phi6) zeros(size(phi2))];
     omega5 = [zeros(size(phi2)) zeros(size(phi2)) dphi5];
@@ -597,36 +641,89 @@ ddphi9 = ddphi8;
     vF = cross(omega5,D_E_vect) + cross(omega6,E_F_vect);
     vF_check = cross(omega7,G_F_vect);
     vF_diff = zeros(length(vF),1);
+    % J    
+    H_I_vect = [r9*cos(phi9) r9*sin(phi9) zeros(size(phi2))];
+    I_J_vect = [r10*cos(phi10) r10*sin(phi10) zeros(size(phi2))];
+    omega9 = [zeros(size(phi2)) zeros(size(phi2)) dphi9];
+    omega10 = [zeros(size(phi2)) zeros(size(phi2)) dphi10];
+    omega11 = [zeros(size(phi2)) zeros(size(phi2)) dphi11];
+    K_J_vect = [r11*cos(phi11-pi) r11*sin(phi11-pi) zeros(size(phi2))];
+    vJ = cross(omega9,H_I_vect) + cross(omega10,I_J_vect);
+    vJ_check = cross(omega11,K_J_vect);
+    vJ_diff = zeros(length(vJ),1);
+
     for i=1:length(vF)
         vF_diff(i) = norm(vF(i,:)) - norm(vF_check(i,:));
     end
-    figure('Name','Velocity control for f via different paths')
-    subplot(321)
+    for i=1:length(vJ)
+        vJ_diff(i) = norm(vJ(i,:)) - norm(vJ_check(i,:));
+    end
+    figure('Name','Velocity control for joints F and J via different paths')
+    subplot(221)
     plot(t,vF_diff);
     xlabel('t [s]')
     ylabel('absolute error v_f [m/s] ')
-    subplot(322)
+    subplot(222)
     plot(t,vF_diff./norm(vF));
     xlabel('t [s]')
     ylabel('relative error v_f [] ')
+    subplot(223)
+    plot(t,vJ_diff);
+    xlabel('t [s]')
+    ylabel('absolute error v_J [m/s] ')
+    subplot(224)
+    plot(t,vJ_diff./norm(vJ));
+    xlabel('t [s]')
+    ylabel('relative error v_J [] ')
+
     
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Velocity control for joints F and J via different paths','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on')
     % ACCELERATION CONTROL USING MULTIPLE POINTS
+    % F    
     alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
     alpha7 = [zeros(size(phi2)) zeros(size(phi2)) ddphi7];
     alpha5 = [zeros(size(phi2)) zeros(size(phi2)) ddphi5];
     aF = cross(omega5,cross(omega5,D_E_vect)) + cross(omega6,cross(omega6,E_F_vect)) + cross(alpha5,D_E_vect) + cross(alpha6,E_F_vect);
     aF_check = cross(omega7,cross(omega7,G_F_vect)) + cross(alpha7,G_F_vect);
     aF_diff = zeros(length(aF),1);
+    % J
+    alpha9 = [zeros(size(phi2)) zeros(size(phi2)) ddphi9];
+    alpha10 = [zeros(size(phi2)) zeros(size(phi2)) ddphi10];
+    alpha11 = [zeros(size(phi2)) zeros(size(phi2)) ddphi11];
+    aJ = cross(omega9,cross(omega9,H_I_vect)) + cross(omega10,cross(omega10,I_J_vect)) + cross(alpha9,H_I_vect) + cross(alpha10,I_J_vect);
+    aJ_check = cross(omega11,cross(omega11,K_J_vect)) + cross(alpha11,K_J_vect);
+    aJ_diff = zeros(length(aJ),1);  
     for i=1:length(aF)
         aF_diff(i) = norm(aF(i,:)) - norm(aF_check(i,:));
     end
-        figure('Name','Acceleration control for f via different paths')
-    subplot(321)
+    for i=1:length(aJ)
+        aJ_diff(i) = norm(aJ(i,:)) - norm(aJ_check(i,:));
+    end
+    figure('Name','Acceleration control for joints F and J via different paths')
+    subplot(221)
     plot(t,aF_diff);
     xlabel('t [s]')
     ylabel('absolute error a_f [m/s] ')
-    subplot(322)
+    subplot(222)
     plot(t,aF_diff./norm(aF));
     xlabel('t [s]')
     ylabel('relative error a_f [] ')
+    subplot(223)
+    plot(t,aJ_diff);
+    xlabel('t [s]')
+    ylabel('absolute error a_J [m/s] ')
+    subplot(224)
+    plot(t,aJ_diff./norm(aJ));
+    xlabel('t [s]')
+    ylabel('relative error a_f [] ')
+    ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
+    1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
+    text(0.5, 1,'Acceleration control for joints F and J via different paths','HorizontalAlignment','center','VerticalAlignment', 'top')
+    set(findobj('type','axes'),'xgrid','on')
+    set(findobj('type','axes'),'ygrid','on')
+end
     

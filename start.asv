@@ -20,9 +20,9 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % program data
-fig_kin_4bar = 0;
-fig_kin_check = 0;% draw figures of kinematic analysis if 1
-fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
+fig_kin_4bar = 1;
+fig_kin_check = 1;% draw figures of kinematic analysis if 1
+fig_dyn_4bar = 0;        % draw figures of dynamic analysis if 1
 
 % kinematic parameters (link lengths)
 r2 = 0.00375;
@@ -49,7 +49,7 @@ rmax8 = sqrt(r18x^2 + (r18y - r2 - r3)^2);
 rwing = 0.06;
 
 X2 = r2/2;               % X coordinates of cog (centre of gravity)
-X3 = r3/3;
+X3 = r3/2;
 X4 = rmax4/2;
 X5 = r5/2;
 X6 = r6/2;
@@ -68,12 +68,12 @@ Y6 = -rwing^2/(2*(rwing+r6));
 Y7 = 0;
 Y8 = 0;
 Y9 = 0;
-Y10 = rwing^2/(2*(rwing+r6));
+Y10 = rwing^2/(2*(rwing+r10));
 Y11 = 0;
 Ywing = rwing/2;
 
 dbar = 2*10^-3;
-rho_link = 7850*pi*dbar^2/4;
+rho_link = 1800*pi*dbar^2/4;
 m2 = r2*rho_link;
 m3 = r3*rho_link;
 m4 = rmax4*rho_link;
@@ -94,8 +94,8 @@ J4 = m4*rmax4^2/12 + m4*X4^2;
 J5 = m5*r5^2/12 + m5*X5^2;
 J6 = m6*r6^2/12 + m6*Y6^2 + mwing*rwing^2/12 + mwing*(-rwing/2-Y6)^2;
 J7 = m7*r7^2/12;
-J8 = m8*rmax8^2/12;
-J9 = m9*r9^2/12;
+J8 = m8*rmax8^2/12 + m8*X8^2;
+J9 = m9*r9^2/12 + m9*X9^2;
 J10 = m10*r10^2/12 + m10*Y10^2 + mwing*rwing^2/12 + mwing*(rwing/2-Y10)^2;
 J11 = m11*r11^2/12;
 
@@ -122,13 +122,13 @@ t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
 omega = 37*2*pi;                   % omega = 145
-phi2=omega*t+(359*pi/180);
+phi2=omega*t+(0*pi/180);
 tijdsvec = size(t);
 dphi2=ones(tijdsvec(1),1).*omega; % ten allen tijde omega
 ddphi2=zeros(tijdsvec(1),1); % ten allen tijde nul
 
 % calculation of the kinematics (see kin_4bar.m)
-[phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar);
+[phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar,fig_kin_check);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

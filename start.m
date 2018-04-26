@@ -20,9 +20,9 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % program data
-fig_kin_4bar = 0;
-fig_kin_check = 0;% draw figures of kinematic analysis if 1
-fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
+fig_kin_4bar = 1;
+fig_kin_check = 1;% draw figures of kinematic analysis if 1
+fig_dyn_4bar = 0;        % draw figures of dynamic analysis if 1
 
 % kinematic parameters (link lengths)
 r2 = 0.00375;
@@ -122,13 +122,13 @@ t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
 omega = 37*2*pi;                   % omega = 145
-phi2=omega*t+(359*pi/180);
+phi2=omega*t+(0*pi/180);
 tijdsvec = size(t);
 dphi2=ones(tijdsvec(1),1).*omega; % ten allen tijde omega
 ddphi2=zeros(tijdsvec(1),1); % ten allen tijde nul
 
 % calculation of the kinematics (see kin_4bar.m)
-[phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar);
+[phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar,fig_kin_check);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
