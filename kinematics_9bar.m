@@ -2,16 +2,17 @@
 %
 % Kinematica en werkuigendynamica.
 %
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
+% Analysis of a 9 bar linkage system
+% 
+% Based on the work of:
 % Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
 % Maarten De Munck <maarten.demunck@mech.kuleuven.be>
 % Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
 % Wim Meeussen <wim.meeussen@mech.kuleuven.be>
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar,fig_kin_check);
+function [phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_9bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_9bar,fig_kin_check);
 
 % allocation of the result vectors (this results in better performance because we don't have to reallocate and
 % copy the vector each time we add an element.
@@ -61,11 +62,12 @@ for k=1:t_size
     % fsolve solves the non-linear set of equations
     % loop closure equations: see loop_closure_eqs.m
     % argument loop_closure_eqs: file containing closure equations
-    % argument [..]': initial values of unknown angles phi3 and phi4
+    % argument [..]': initial values of unknown angles and lengths
     % argument optim options: parameters for fsolve
-    % argument phi2(k): input angle phi2 for which we want to calculate the unknown angles phi3 and phi4
+    % argument phi2(k): input angle phi2 for which we want to calculate the
+    % unknown angles and lengths
     % argument a1 ... phi1: constants
-    % return value x: solution for the unknown angles phi3 and phi4
+    % return value x: solution for the unknown angles and lengths
     % return exitflag: indicates convergence of algorithm
     gamma = 330*pi/180;
     [x, fval, exitflag]=fsolve('loop_closure_eqs',[phi3_init phi4_init phi6_init phi7_init phi8_init phi10_init phi11_init r13_init r4_init r8_init]',optim_options,phi2(k),r2,r3,r5,r6,r7,r9,r10,r11,gamma,r14x,r14y,r47y,r18x,r18y,r811y);
@@ -213,7 +215,7 @@ hold on
 plot([x_left, x_right], [y_bottom, y_top]);
 axis equal;
 movie_axes = axis;   %save current axes into movie_axes
-if fig_kin_4bar
+if fig_kin_9bar
 % draw and save movie frame
 for m=1:length(index_vec)
     index = index_vec(m);
@@ -534,7 +536,7 @@ if fig_kin_check
     % VELOCITY CONTROL WITH NUMERICAL DIFFERENTIATION
     dphi6_control = diff(phi6)/Ts;
     dphi10_control = diff(phi10)/Ts;
-    dphi3_control = diff(phi4)/Ts;  
+    dphi3_control = diff(phi3)/Ts;  
     
     
     dphi6_control = [dphi6_control ; dphi6_control(end)];
@@ -545,7 +547,7 @@ if fig_kin_check
     dphi10_check = dphi10-dphi10_control;
     dphi3_check = dphi3 - dphi3_control;
     
-    figure('Name','Velocity control for bars 6, 10 and 3 with numerical differentiation')
+    figure('Name','Velocity control for phi 6, 10 and 3 with numerical differentiation')
     subplot(321)
     plot(t,dphi6_check)
     xlabel('t [s]')
@@ -559,12 +561,12 @@ if fig_kin_check
     plot(t,dphi3_check)
     xlabel('t [s]')
     ylabel('absolute error \omega_3 [rad/s]')
-    subplot(322)
+    subplot(324)
     xlabel('t [s]')
     plot(t,dphi10_check./dphi10)
     xlabel('t [s]')
     ylabel('relative error \omega_10 []')   
-    subplot(324)
+    subplot(322)
     xlabel('t [s]')
     plot(t,dphi6_check./dphi6)
     xlabel('t [s]')
@@ -576,7 +578,7 @@ if fig_kin_check
     ylabel('relative error \omega_3 []')       
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-    text(0.5, 1,'\bf Velocity control for bar 6, 10 and 3 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
+    text(0.5, 1,'\bf Velocity control for phi 6, 10 and 3 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
     
@@ -594,7 +596,7 @@ if fig_kin_check
     ddphi10_check = ddphi10-ddphi10_control;
     ddphi3_check = ddphi3-ddphi3_control;
     
-    figure('Name','Acceleration control for bar 6, 10 and 3 with numerical differentiation')
+    figure('Name','Acceleration control for phi 6, 10 and 3 with numerical differentiation')
     subplot(321)
     plot(t,ddphi6_check)
     xlabel('t [s]')
@@ -622,7 +624,7 @@ if fig_kin_check
 
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-    text(0.5, 1,'\bf Acceleration control for bar 6, 10, 3 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
+    text(0.5, 1,'\bf Acceleration control for phi 6, 10, 3 with numerical differentiation','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
     
@@ -651,55 +653,35 @@ if fig_kin_check
     vJ = cross(omega9,H_I_vect) + cross(omega10,I_J_vect);
     vJ_check = cross(omega11,K_J_vect);
     vJ_diff = zeros(length(vJ),1);
-    %  C
-    A_B_vect = [r2*cos(phi2) r2*sin(phi2) zeros(size(phi2))];
-    C_B_vect = [-r3*cos(phi3) -r3*sin(phi3) zeros(size(phi2))];
-    omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2];
-    omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
-    omega4 = [zeros(size(phi2)) zeros(size(phi2)) dphi4];
-    D_C_vect = [r4.*cos(phi4+pi) r4.*sin(phi4+pi) zeros(size(phi2))];
-    vC = cross(omega2,A_B_vect) + cross(omega3,B_C_vect);
-    vC_check = cross(omega4,D_C_vect);
-    vC_diff = zeros(length(vC),1);
-    
+
     for i=1:length(vF)
         vF_diff(i) = norm(vF(i,:)) - norm(vF_check(i,:));
     end
     for i=1:length(vJ)
         vJ_diff(i) = norm(vJ(i,:)) - norm(vJ_check(i,:));
     end
-    for i=1:length(vC)
-        vC_diff(i) = norm(vC(i,:)) - norm(vC_check(i,:));
-    end
-    figure('Name','Velocity control for bars 6, 10, 3 via different paths')
-    subplot(321)
+    figure('Name','Velocity control for joints F and J via different paths')
+    subplot(221)
     plot(t,vF_diff);
     xlabel('t [s]')
     ylabel('absolute error v_f [m/s] ')
-    subplot(322)
+    subplot(222)
     plot(t,vF_diff./norm(vF));
     xlabel('t [s]')
     ylabel('relative error v_f [] ')
-    subplot(323)
+    subplot(223)
     plot(t,vJ_diff);
     xlabel('t [s]')
     ylabel('absolute error v_J [m/s] ')
-    subplot(324)
+    subplot(224)
     plot(t,vJ_diff./norm(vJ));
     xlabel('t [s]')
     ylabel('relative error v_J [] ')
-    subplot(325)
-    plot(t,vC_diff);
-    xlabel('t [s]')
-    ylabel('absolute error v_C [m/s] ')
-    subplot(326)
-    plot(t,vC_diff./norm(vC));
-    xlabel('t [s]')
-    ylabel('relative error v_C [] ')
+
     
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-    text(0.5, 1,'Velocity control for bars 6, 10, 3 via different paths','HorizontalAlignment','center','VerticalAlignment', 'top')
+    text(0.5, 1,'Velocity control for joints F and J via different paths','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
     % ACCELERATION CONTROL USING MULTIPLE POINTS
@@ -716,51 +698,33 @@ if fig_kin_check
     alpha11 = [zeros(size(phi2)) zeros(size(phi2)) ddphi11];
     aJ = cross(omega9,cross(omega9,H_I_vect)) + cross(omega10,cross(omega10,I_J_vect)) + cross(alpha9,H_I_vect) + cross(alpha10,I_J_vect);
     aJ_check = cross(omega11,cross(omega11,K_J_vect)) + cross(alpha11,K_J_vect);
-    aJ_diff = zeros(length(aJ),1);
-    % C
-    alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2];
-    alpha3 = [zeros(size(phi2)) zeros(size(phi2)) ddphi3];
-    alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
-    aC = cross(omega2,cross(omega2,A_B_vect)) + cross(omega3,cross(omega3,B_C_vect)) + cross(alpha2,A_B_vect) + cross(alpha3,B_C_vect);
-    aC_check = cross(omega4,cross(omega4,D_C_vect)) + cross(alpha4,D_C_vect);
-    aC_diff = zeros(length(aC),1);    
+    aJ_diff = zeros(length(aJ),1);  
     for i=1:length(aF)
         aF_diff(i) = norm(aF(i,:)) - norm(aF_check(i,:));
     end
     for i=1:length(aJ)
         aJ_diff(i) = norm(aJ(i,:)) - norm(aJ_check(i,:));
     end
-    for i=1:length(aC)
-        aC_diff(i) = norm(aC(i,:)) - norm(aC_check(i,:));
-    end        
-    figure('Name','Acceleration control for bars6, 10, 3 via different paths')
-    subplot(321)
+    figure('Name','Acceleration control for joints F and J via different paths')
+    subplot(221)
     plot(t,aF_diff);
     xlabel('t [s]')
     ylabel('absolute error a_f [m/s] ')
-    subplot(322)
+    subplot(222)
     plot(t,aF_diff./norm(aF));
     xlabel('t [s]')
     ylabel('relative error a_f [] ')
-    subplot(323)
+    subplot(223)
     plot(t,aJ_diff);
     xlabel('t [s]')
     ylabel('absolute error a_J [m/s] ')
-    subplot(324)
+    subplot(224)
     plot(t,aJ_diff./norm(aJ));
-    xlabel('t [s]')
-    ylabel('relative error a_J [] ')
-    subplot(325)
-    plot(t,aC_diff);
-    xlabel('t [s]')
-    ylabel('absolute error a_C [m/s] ')
-    subplot(326)
-    plot(t,aC_diff./norm(aC));
     xlabel('t [s]')
     ylabel('relative error a_f [] ')
     ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0
     1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-    text(0.5, 1,'Acceleration control for bars 6, 10, 3 via different paths','HorizontalAlignment','center','VerticalAlignment', 'top')
+    text(0.5, 1,'Acceleration control for joints F and J via different paths','HorizontalAlignment','center','VerticalAlignment', 'top')
     set(findobj('type','axes'),'xgrid','on')
     set(findobj('type','axes'),'ygrid','on')
 end
