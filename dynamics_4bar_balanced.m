@@ -329,14 +329,14 @@ if fig_dyn_4bar
     figure
     subplot(211)
     plot(F_A_x,F_A_y),grid
-    xlabel('F_A_x_balanced [N]')
-    ylabel('F_A_y_balanced [N]')
+    xlabel('F_A_x_b_a_l_a_n_c_e_d [N]')
+    ylabel('F_A_y_b_a_l_a_n_c_e_d [N]')
     axis tight
     
     
     subplot(212)
     plot(t,M_A)
-    ylabel('M_A_balanced [N-m]')
+    ylabel('M_A_b_a_l_a_n_c_e_d [N-m]')
     xlabel('t [s]')  
     
     

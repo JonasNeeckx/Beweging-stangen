@@ -76,6 +76,10 @@ d_ED_x = -r5*cos(phi5);
 d_ED_y = -r5*sin(phi5);
 d_IH_x = -r9*cos(phi9);
 d_IH_y = -r9*sin(phi9);
+d_Ewing_x = X6*cos(phi6) + Ywing*sin(phi6);
+d_Ewing_y = -Ywing*cos(phi6)+X6*sin(phi6);
+d_Iwing_x = X6*cos(phi10) - Ywing*sin(phi10);
+d_Iwing_y = Ywing*cos(phi10)+X6*sin(phi10);
 
 %The masses and moments of inertia of bonded links are added
 %together
@@ -204,7 +208,7 @@ for k=1:t_size
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0   0;
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0;
         cog2_A_y(k) -cog2_A_x(k) -cog2_B_y(k) cog2_B_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1;
-        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) 0 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) cog3_C_y(k)*sin(phi4(k))+cog3_C_x(k)*cos(phi4(k)) -cog3_C_y(k)*sin(phi8(k))-cog3_C_x(k)*cos(phi8(k))  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0  -r4(k)   0   0   0  -d_ED_y(k)   d_ED_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   cog6_E_y(k) -cog6_E_x(k) -cog6_F_y(k) cog6_F_x(k)   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   cog7_F_y(k) -cog7_F_x(k) cog7_G_y(k) -cog7_G_x(k)   0   0   0   0   0   0   0   0   0;
@@ -278,10 +282,12 @@ vel_3 = vel_B + cross(omega3,  cog3_B_vec);
 vel_45 = cross(omega4, cog45_D_vec);
 vel_E = cross(omega5, DE_vec);
 vel_6 = vel_E + cross(omega6, cog6_E_vec);
+vel_Ewing = vel_E + cross(omega6,[d_Ewing_x, d_Ewing_y, 0]);
 vel_7 = cross(omega7, cog7_G_vec);
 vel_89 = cross(omega8, cog89_H_vec);
 vel_I = cross(omega9, HI_vec);
 vel_10 = vel_I + cross(omega10, cog10_I_vec);
+vel_Iwing = vel_I + cross(omega6,[D
 vel_11 = cross(omega11, cog11_K_vec);
 
 vel_2x = vel_2(:,1);
@@ -323,6 +329,7 @@ F_y_Work(k) = m2*acc_2y(k) + m3*acc_3y(k) + m45*acc_45y(k) + m6wing*acc_6y(k) + 
     m7*acc_7y(k) + m89*acc_89y(k) + m10wing*acc_10y(k) + m11*acc_11y(k);
 end
 
+%% plot figures
 % **********************
 % *** plot figures ***
 % **********************
@@ -330,22 +337,27 @@ end
 if fig_dyn_4bar
     
     figure
-    subplot(221)
+    subplot(321)
     plot(F_A_x,F_A_y),grid
     xlabel('F_A_x [N]')
     ylabel('F_A_y [N]')
     axis tight
-    subplot(222)
+    subplot(322)
     plot(F_23_x,F_23_y),grid
     xlabel('F_2_3_x [N]')
     ylabel('F_2_3_y [N]')
     axis tight
-    subplot(223)
-    plot(F_34,F_38),grid
-    xlabel('F_3_4 [N]')
-    ylabel('F_3_8[N]')
+    subplot(323)
+    plot(F_34.*sin(phi4),-F_34.*cos(phi4)),grid
+    xlabel('F_3_4_x [N]')
+    ylabel('F_3_4_y[N]')
     axis tight
-    subplot(224)
+    subplot(324)
+    plot(F_38.*sin(phi8),-F_38.*cos(phi8)),grid
+    xlabel('F_3_8_x [N]')
+    ylabel('F_3_8_y[N]')
+    axis tight
+    subplot(325)
     plot(F_C_x,zeros(size(phi3))),grid
     xlabel('F_C_x [N]')
     ylabel('F_C_y [N]')
@@ -415,18 +427,32 @@ if fig_dyn_4bar
     plot(t,M_A-M_A_second_check)
     ylabel('Error Force calculation [N-m]')
     xlabel('t [s]')
+
     figure
-    
     subplot(211)
-    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x+F_-F_x_Work)
-    ylabel('F_x_control [N]')
+    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x)
+    ylabel('F_x_s_h_a_k_i_n_g [N]')
     xlabel('t [s]')  
     
     subplot(212)
-    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y-F_y_Work)    
-    ylabel('F_y_control [N]')
+    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y)    
+    ylabel('F_y_s_h_a_k_i_n_g [N]')
+    xlabel('t [s]') 
+    
+    figure
+    subplot(211)
+    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x+F_wing*(cos(phi6)+cos(phi10))-F_x_Work)
+    ylabel('F_x_c_o_n_t_r_o_l [N]')
+    xlabel('t [s]')  
+    
+    subplot(212)
+    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y+F_wing*(sin(phi6)+sin(phi10))-F_y_Work)    
+    ylabel('F_y_c_o_n_t_r_o_l [N]')
     xlabel('t [s]')
     
+end
+
+if 1
 end
 
 

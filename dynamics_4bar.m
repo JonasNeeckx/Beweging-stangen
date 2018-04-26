@@ -76,6 +76,10 @@ d_ED_x = -r5*cos(phi5);
 d_ED_y = -r5*sin(phi5);
 d_IH_x = -r9*cos(phi9);
 d_IH_y = -r9*sin(phi9);
+d_Ewing_x = X6*cos(phi6) + Ywing*sin(phi6);
+d_Ewing_y = -Ywing*cos(phi6)+X6*sin(phi6);
+d_Iwing_x = X6*cos(phi10) - Ywing*sin(phi10);
+d_Iwing_y = Ywing*cos(phi10)+X6*sin(phi10);
 
 %The masses and moments of inertia of bonded links are added
 %together
@@ -278,10 +282,12 @@ vel_3 = vel_B + cross(omega3,  cog3_B_vec);
 vel_45 = cross(omega4, cog45_D_vec);
 vel_E = cross(omega5, DE_vec);
 vel_6 = vel_E + cross(omega6, cog6_E_vec);
+vel_Ewing = vel_E + cross(omega6,[d_Ewing_x, d_Ewing_y, zeros(size(phi2))]);
 vel_7 = cross(omega7, cog7_G_vec);
 vel_89 = cross(omega8, cog89_H_vec);
 vel_I = cross(omega9, HI_vec);
 vel_10 = vel_I + cross(omega10, cog10_I_vec);
+vel_Iwing = vel_I + cross(omega6,[d_Iwing_x, d_Iwing_y, zeros(size(phi2))]);
 vel_11 = cross(omega11, cog11_K_vec);
 
 vel_2x = vel_2(:,1);
@@ -312,9 +318,7 @@ M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k
     m7 * (acc_7x(k)*vel_7x(k) + acc_7y(k)*vel_7y(k))+m89 * (acc_89x(k)*vel_89x(k) + acc_89y(k)*vel_89y(k))+...
     m10wing * (acc_10x(k)*vel_10x(k) + acc_10y(k)*vel_10y(k))+m11 * (acc_11x(k)*vel_11x(k) + acc_11y(k)*vel_11y(k))+...
     J2*dphi2(k)*ddphi2(k)+J3*dphi3(k)*ddphi3(k)+J45cog*dphi4(k)*ddphi4(k)+J6*dphi6(k)*ddphi6(k)+J7*dphi7(k)*ddphi7(k)+...
-    J89cog*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi2(k); 
-
-M_A_second_check(k) = -F_23_x(k)*r2*sin(phi2(k))+F_23_y(k)*cos(phi2(k))*r2;
+    J89cog*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k)-(norm(vel_Iwing(k))+norm(vel_Ewing(k)))*F_wing)/dphi2(k); 
 
 F_x_Work(k) = m2*acc_2x(k) + m3*acc_3x(k) + m45*acc_45x(k) + m6wing*acc_6x(k) + ...
     m7*acc_7x(k) + m89*acc_89x(k) + m10wing*acc_10x(k) + m11*acc_11x(k);
@@ -323,6 +327,7 @@ F_y_Work(k) = m2*acc_2y(k) + m3*acc_3y(k) + m45*acc_45y(k) + m6wing*acc_6y(k) + 
     m7*acc_7y(k) + m89*acc_89y(k) + m10wing*acc_10y(k) + m11*acc_11y(k);
 end
 
+%% plot figures
 % **********************
 % *** plot figures ***
 % **********************
@@ -330,22 +335,27 @@ end
 if fig_dyn_4bar
     
     figure
-    subplot(221)
+    subplot(321)
     plot(F_A_x,F_A_y),grid
     xlabel('F_A_x [N]')
     ylabel('F_A_y [N]')
     axis tight
-    subplot(222)
+    subplot(322)
     plot(F_23_x,F_23_y),grid
     xlabel('F_2_3_x [N]')
     ylabel('F_2_3_y [N]')
     axis tight
-    subplot(223)
-    plot(F_34,F_38),grid
-    xlabel('F_3_4 [N]')
-    ylabel('F_3_8[N]')
+    subplot(323)
+    plot(F_34.*sin(phi4),-F_34.*cos(phi4)),grid
+    xlabel('F_3_4_x [N]')
+    ylabel('F_3_4_y[N]')
     axis tight
-    subplot(224)
+    subplot(324)
+    plot(F_38.*sin(phi8),-F_38.*cos(phi8)),grid
+    xlabel('F_3_8_x [N]')
+    ylabel('F_3_8_y[N]')
+    axis tight
+    subplot(325)
     plot(F_C_x,zeros(size(phi3))),grid
     xlabel('F_C_x [N]')
     ylabel('F_C_y [N]')
@@ -403,30 +413,39 @@ if fig_dyn_4bar
     
     subplot(222)
     plot(t,M_A_Energy)
-    ylabel('M_A_control [N-m]')
+    ylabel('M_A_c_o_n_t_r_o_l [N-m]')
     xlabel('t [s]')    
     
     subplot(223)
     plot(t,M_A-M_A_Energy)
     ylabel('Error Energy method [N-m]')
     xlabel('t [s]')
- 
-    subplot(224)
-    plot(t,M_A-M_A_second_check)
-    ylabel('Error Force calculation [N-m]')
-    xlabel('t [s]')
+
     figure
+    subplot(211)
+    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x)
+    ylabel('F_x_s_h_a_k_i_n_g [N]')
+    xlabel('t [s]')  
     
+    subplot(212)
+    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y)    
+    ylabel('F_y_s_h_a_k_i_n_g [N]')
+    xlabel('t [s]') 
+    
+    figure
     subplot(211)
     plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x+F_wing*(cos(phi6)+cos(phi10))-F_x_Work)
-    ylabel('F_x_control [N]')
+    ylabel('F_x_c_o_n_t_r_o_l [N]')
     xlabel('t [s]')  
     
     subplot(212)
     plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y+F_wing*(sin(phi6)+sin(phi10))-F_y_Work)    
-    ylabel('F_y_control [N]')
+    ylabel('F_y_c_o_n_t_r_o_l [N]')
     xlabel('t [s]')
     
+end
+
+if 1
 end
 
 
