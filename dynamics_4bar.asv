@@ -36,7 +36,7 @@ dphi9 = dphi8;
 ddphi9 = ddphi8;
 
 %Thrust on the wing (simplified to a force in the middle of the wing)
-F_wing = 0;% 0.12;
+F_wing = 0.12;
 
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
 cog2_A_x = X2*cos(phi2);
@@ -302,6 +302,7 @@ vel_11x = vel_11(:,1);
 vel_11y = vel_11(:,2);
 
 M_A_Energy = zeros(size(phi3));
+M_A_second_check = zeros(size(phi3));
 F_x_Work = zeros(size(phi4));
 F_y_Work = zeros(size(phi3));
 
@@ -312,6 +313,8 @@ M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k
     m10wing * (acc_10x(k)*vel_10x(k) + acc_10y(k)*vel_10y(k))+m11 * (acc_11x(k)*vel_11x(k) + acc_11y(k)*vel_11y(k))+...
     J2*dphi2(k)*ddphi2(k)+J3*dphi3(k)*ddphi3(k)+J45cog*dphi4(k)*ddphi4(k)+J6*dphi6(k)*ddphi6(k)+J7*dphi7(k)*ddphi7(k)+...
     J89cog*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi2(k); 
+
+M_A_second_check(k) = -F_23_x(k)*r2*sin(phi2(k))+F_23_y(k)*cos(phi2(k))*r2;
 
 F_x_Work(k) = m2*acc_2x(k) + m3*acc_3x(k) + m45*acc_45x(k) + m6wing*acc_6x(k) + ...
     m7*acc_7x(k) + m89*acc_89x(k) + m10wing*acc_10x(k) + m11*acc_11x(k);
@@ -405,12 +408,17 @@ if fig_dyn_4bar
     
     subplot(223)
     plot(t,M_A-M_A_Energy)
-    ylabel('Error [N-m]')
+    ylabel('Error Energy method [N-m]')
     xlabel('t [s]')
-    
+ 
+    subplot(224)
+    plot(t,M_A-M_A_second_check)
+    ylabel('Error Force calculation [N-m]')
+    xlabel('t [s]')
     figure
+    
     subplot(211)
-    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x-F_x_Work)
+    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x+F_-F_x_Work)
     ylabel('F_x_control [N]')
     xlabel('t [s]')  
     

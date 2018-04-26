@@ -187,7 +187,7 @@ M_A = zeros(size(phi2));
 % calculate dynamics for each time step
 t_size = size(t,1);    % number of simulation steps
 for k=1:t_size
-  A = [ 1   0   -1  0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+ A = [ 1   0   -1  0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   1   0  -1   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   1   0   1 sin(phi4(k)) -sin(phi8(k)) 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   1   0 -cos(phi4(k)) cos(phi8(k)) 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
@@ -204,7 +204,7 @@ for k=1:t_size
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0   0;
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0;
         cog2_A_y(k) -cog2_A_x(k) -cog2_B_y(k) cog2_B_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1;
-        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) 0 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) cog3_C_y(k)*sin(phi4(k))+cog3_C_x(k)*cos(phi4(k)) -cog3_C_y(k)*sin(phi8(k))-cog3_C_x(k)*cos(phi8(k))  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0  -r4(k)   0   0   0  -d_ED_y(k)   d_ED_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   cog6_E_y(k) -cog6_E_x(k) -cog6_F_y(k) cog6_F_x(k)   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   cog7_F_y(k) -cog7_F_x(k) cog7_G_y(k) -cog7_G_x(k)   0   0   0   0   0   0   0   0   0;

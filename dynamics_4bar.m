@@ -36,7 +36,7 @@ dphi9 = dphi8;
 ddphi9 = ddphi8;
 
 %Thrust on the wing (simplified to a force in the middle of the wing)
-F_wing = 0;% 0.12;
+F_wing = 0.12;
 
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
 cog2_A_x = X2*cos(phi2);
@@ -204,7 +204,7 @@ for k=1:t_size
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0   0;
         0   0   0   0   0   0           0           0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   1   0;
         cog2_A_y(k) -cog2_A_x(k) -cog2_B_y(k) cog2_B_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1;
-        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) 0 0  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
+        0   0   cog3_B_y(k) -cog3_B_x(k) cog3_C_y(k) cog3_C_y(k)*sin(phi4(k))+cog3_C_x(k)*cos(phi4(k)) -cog3_C_y(k)*sin(phi8(k))-cog3_C_x(k)*cos(phi8(k))  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0  -r4(k)   0   0   0  -d_ED_y(k)   d_ED_x(k)   0   0   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   cog6_E_y(k) -cog6_E_x(k) -cog6_F_y(k) cog6_F_x(k)   0   0   0   0   0   0   0   0   0   0   0;
         0   0   0   0   0   0   0   0   0   0   0   cog7_F_y(k) -cog7_F_x(k) cog7_G_y(k) -cog7_G_x(k)   0   0   0   0   0   0   0   0   0;
@@ -418,12 +418,12 @@ if fig_dyn_4bar
     figure
     
     subplot(211)
-    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x-F_x_Work)
+    plot(t,F_A_x+F_D_x+F_G_x+F_H_x+F_K_x+F_C_x+F_wing*(cos(phi6)+cos(phi10))-F_x_Work)
     ylabel('F_x_control [N]')
     xlabel('t [s]')  
     
     subplot(212)
-    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y-F_y_Work)    
+    plot(t,F_A_y+F_D_y+F_G_y+F_H_y+F_K_y+F_wing*(sin(phi6)+sin(phi10))-F_y_Work)    
     ylabel('F_y_control [N]')
     xlabel('t [s]')
     
