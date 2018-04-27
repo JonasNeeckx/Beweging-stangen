@@ -4,6 +4,9 @@
 %
 % Analysis of a 9 bar linkage system
 % 
+% Jonas Neeckx
+% Nicolas Heintz
+% 
 % Based on the work of:
 % Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
 % Maarten De Munck <maarten.demunck@mech.kuleuven.be>

@@ -2,15 +2,18 @@
 %
 % Kinematica en werkuigendynamica.
 %
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
+% Analysis of a 9 bar linkage system
+% 
+% Jonas Neeckx
+% Nicolas Heintz
+% 
+% Based on the work of:
 % Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
 % Maarten De Munck <maarten.demunck@mech.kuleuven.be>
 % Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
 % Wim Meeussen <wim.meeussen@mech.kuleuven.be>
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x, F_56_y, F_67_x, F_67_y,...
     F_G_x, F_G_y, F_H_x, F_H_y, F_910_x, F_910_y, F_1011_x, F_1011_y, F_K_x, F_K_y, M_A] = ...
