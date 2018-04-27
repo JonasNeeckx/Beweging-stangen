@@ -2,26 +2,29 @@
 %
 % Kinematica en werkuigendynamica.
 %
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
+% Analysis of a 9 bar linkage system
+% 
+% Jonas Neeckx
+% Nicolas Heintz
+% 
+% Based on the work of:
 % Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
 % Maarten De Munck <maarten.demunck@mech.kuleuven.be>
 % Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
 % Wim Meeussen <wim.meeussen@mech.kuleuven.be>
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x, F_56_y, F_67_x, F_67_y,...
     F_G_x, F_G_y, F_H_x, F_H_y, F_910_x, F_910_y, F_1011_x, F_1011_y, F_K_x, F_K_y, M_A] = ...
-dynamics_4bar_balanced(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
+dynamics_9bar_balanced(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
 dphi2,dphi3,dphi4, dphi6, dphi7, dphi8,  dphi10, dphi11,...
 ddphi2,ddphi3,ddphi4,ddphi6, ddphi7, ddphi8,  ddphi10, ddphi11,...
 r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4, rmax8, ...
 m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,mwing, ...
 X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,Xwing, ...
 Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Ywing, ...
-J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_4bar)
+J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_9bar)
 
 
 % a lot of definitions to make the matrix A and B a bit clear.
@@ -324,7 +327,7 @@ end
 % *** plot figures ***
 % **********************
 
-if fig_dyn_4bar
+if fig_dyn_9bar
     
     figure
     subplot(211)

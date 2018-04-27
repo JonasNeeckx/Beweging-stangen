@@ -2,26 +2,30 @@
 %
 % Kinematica en werkuigendynamica.
 %
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
+% Analysis of a 9 bar linkage system
+% 
+% Jonas Neeckx
+% Nicolas Heintz
+% 
+% Based on the work of:
 % Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
 % Maarten De Munck <maarten.demunck@mech.kuleuven.be>
 % Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
 % Wim Meeussen <wim.meeussen@mech.kuleuven.be>
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 function [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x, F_56_y, F_67_x, F_67_y,...
     F_G_x, F_G_y, F_H_x, F_H_y, F_910_x, F_910_y, F_1011_x, F_1011_y, F_K_x, F_K_y, M_A] = ...
-dynamics_4bar(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
+dynamics_9bar(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
 dphi2,dphi3,dphi4, dphi6, dphi7, dphi8,  dphi10, dphi11,...
 ddphi2,ddphi3,ddphi4,ddphi6, ddphi7, ddphi8,  ddphi10, ddphi11,...
 r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4, rmax8, ...
 m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,mwing, ...
 X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,Xwing, ...
 Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Ywing, ...
-J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_4bar)
+J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_9bar)
 
 
 % a lot of definitions to make the matrix A and B a bit clear.
@@ -282,12 +286,12 @@ vel_3 = vel_B + cross(omega3,  cog3_B_vec);
 vel_45 = cross(omega4, cog45_D_vec);
 vel_E = cross(omega5, DE_vec);
 vel_6 = vel_E + cross(omega6, cog6_E_vec);
-vel_Ewing = vel_E + cross(omega6,[d_Ewing_x, d_Ewing_y, 0]);
+vel_Ewing = vel_E + cross(omega6,[d_Ewing_x, d_Ewing_y, zeros(size(phi2))]);
 vel_7 = cross(omega7, cog7_G_vec);
 vel_89 = cross(omega8, cog89_H_vec);
 vel_I = cross(omega9, HI_vec);
 vel_10 = vel_I + cross(omega10, cog10_I_vec);
-vel_Iwing = vel_I + cross(omega6,[D
+vel_Iwing = vel_I + cross(omega6,[d_Iwing_x, d_Iwing_y, zeros(size(phi2))]);
 vel_11 = cross(omega11, cog11_K_vec);
 
 vel_2x = vel_2(:,1);
@@ -318,9 +322,7 @@ M_A_Energy(k) = (m2 * (acc_2x(k)*vel_2x(k) + acc_2y(k)*vel_2y(k))+m3 * (acc_3x(k
     m7 * (acc_7x(k)*vel_7x(k) + acc_7y(k)*vel_7y(k))+m89 * (acc_89x(k)*vel_89x(k) + acc_89y(k)*vel_89y(k))+...
     m10wing * (acc_10x(k)*vel_10x(k) + acc_10y(k)*vel_10y(k))+m11 * (acc_11x(k)*vel_11x(k) + acc_11y(k)*vel_11y(k))+...
     J2*dphi2(k)*ddphi2(k)+J3*dphi3(k)*ddphi3(k)+J45cog*dphi4(k)*ddphi4(k)+J6*dphi6(k)*ddphi6(k)+J7*dphi7(k)*ddphi7(k)+...
-    J89cog*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k))/dphi2(k); 
-
-M_A_second_check(k) = -F_23_x(k)*r2*sin(phi2(k))+F_23_y(k)*cos(phi2(k))*r2;
+    J89cog*dphi8(k)*ddphi8(k)+J10*dphi10(k)*ddphi10(k)+J11*dphi11(k)*ddphi11(k)-(norm(vel_Iwing(k))+norm(vel_Ewing(k)))*F_wing)/dphi2(k); 
 
 F_x_Work(k) = m2*acc_2x(k) + m3*acc_3x(k) + m45*acc_45x(k) + m6wing*acc_6x(k) + ...
     m7*acc_7x(k) + m89*acc_89x(k) + m10wing*acc_10x(k) + m11*acc_11x(k);
@@ -334,7 +336,7 @@ end
 % *** plot figures ***
 % **********************
 
-if fig_dyn_4bar
+if fig_dyn_9bar
     
     figure
     subplot(321)
@@ -415,17 +417,12 @@ if fig_dyn_4bar
     
     subplot(222)
     plot(t,M_A_Energy)
-    ylabel('M_A_control [N-m]')
+    ylabel('M_A_c_o_n_t_r_o_l [N-m]')
     xlabel('t [s]')    
     
     subplot(223)
     plot(t,M_A-M_A_Energy)
     ylabel('Error Energy method [N-m]')
-    xlabel('t [s]')
- 
-    subplot(224)
-    plot(t,M_A-M_A_second_check)
-    ylabel('Error Force calculation [N-m]')
     xlabel('t [s]')
 
     figure

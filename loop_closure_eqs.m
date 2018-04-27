@@ -2,23 +2,28 @@
 %
 % Kinematica en werkuigendynamica.
 %
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
+% Analysis of a 9 bar linkage system
+% 
+% Jonas Neeckx
+% Nicolas Heintz
+% 
+% Based on the work of:
 % Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
 % Maarten De Munck <maarten.demunck@mech.kuleuven.be>
 % Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
 % Wim Meeussen <wim.meeussen@mech.kuleuven.be>
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 function F=loop_closure_eqs(phi_init,phi2,r2,r3,r5,r6,r7,r9,r10,r11,gamma,r14x,r14y,r47y,r18x,r18y,r811y)
 
-% first argument: the initial values of the unknown angles phi3 and phi4
-% argument phi2: input angle phi2 for which we want to calculate the unknown angles phi3 and phi4
-% arguments a1 ... phi1: constants
+% first argument: the initial values of the unknown angles and lengths
+% argument phi2: input angle phi2 for which we want to calculate the
+% unknown angles and lengths
 
-% copy initial values of unknown angles phi3 and phi4
+
+% copy initial values of unknown angles and lengths
 phi3=phi_init(1);
 phi4=phi_init(2);
 phi6=phi_init(3);

@@ -2,8 +2,12 @@
 %
 % Kinematica en werkuigendynamica.
 %
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
+% Analysis of a 9 bar linkage system
+% 
+% Jonas Neeckx
+% Nicolas Heintz
+% 
+% Based on the work of:
 % Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
 % Maarten De Munck <maarten.demunck@mech.kuleuven.be>
 % Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
@@ -20,9 +24,9 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % program data
-fig_kin_4bar = 0;
-fig_kin_check = 0;% draw figures of kinematic analysis if 1
-fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
+fig_kin_9bar = 1;           % draw figures of kinematic analysis if 1
+fig_kin_check = 1;          % draw figures of kinematic checks if 1
+fig_dyn_9bar = 0;           % draw figures of dynamic analysis if 1
 
 % kinematic parameters (link lengths)
 r2 = 0.00375;
@@ -105,7 +109,7 @@ J11 = m11*r11^2/12;
 
 % position analysis
 phi3_init = 60*pi/180;
-phi4_init = 0;    % initial condition for first step of position analysis with fsolve (phi3 and phi4)
+phi4_init = 0;    % initial condition for first step of position analysis with fsolve
 phi6_init = 90*pi/180;  % VERY IMPORTANT because it determines which branch of the mechanism you're in
 phi7_init = 210*pi/180;
 phi8_init = pi;
@@ -122,13 +126,13 @@ t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
 omega = 37*2*pi;                   % omega = 145
-phi2=omega*t+(359*pi/180);
+phi2=omega*t+(0*pi/180);
 tijdsvec = size(t);
-dphi2=ones(tijdsvec(1),1).*omega; % ten allen tijde omega
-ddphi2=zeros(tijdsvec(1),1); % ten allen tijde nul
+dphi2=ones(tijdsvec(1),1).*omega; % Always omega
+ddphi2=zeros(tijdsvec(1),1); % Always zero
 
 % calculation of the kinematics (see kin_4bar.m)
-[phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_4bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_4bar);
+[phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,dphi3,dphi4,dphi6,dphi7,dphi8,dphi10,dphi11,ddphi3,ddphi4,ddphi6,ddphi7,ddphi8,ddphi10,ddphi11,r8,dr8,ddr8,r13,dr13,ddr13,r4,dr4,ddr4] = kinematics_9bar(r2,r3,r5,r6,r7,r9,r10,r11,r14x,r14y,r47y,r18x,r18y,r811y,phi2,dphi2,ddphi2,phi3_init,phi4_init,phi6_init,phi7_init,phi8_init,phi10_init,phi11_init,r13_init,r4_init,r8_init,t,fig_kin_9bar,fig_kin_check);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,25 +142,25 @@ ddphi2=zeros(tijdsvec(1),1); % ten allen tijde nul
 % calculation of the dynamics (see dyn_4bar.m)
 [F_A_x, F_A_y, F_23_x, F_23_y, F_C_x, F_34, F_38, F_D_x, F_D_y, F_56_x, F_56_y, F_67_x, F_67_y,...
     F_G_x, F_G_y, F_H_x, F_H_y, F_910_x, F_910_y, F_1011_x, F_1011_y, F_K_x, F_K_y, M_A] = ...
-    dynamics_4bar(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
+    dynamics_9bar(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
 dphi2,dphi3,dphi4, dphi6, dphi7, dphi8, dphi10, dphi11,...
 ddphi2,ddphi3,ddphi4,ddphi6, ddphi7, ddphi8, ddphi10, ddphi11,...
 r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4,rmax8,...
 m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,mwing,...
 X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,Xwing,...
 Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Ywing,...
-J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_4bar);
+J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_9bar);
 
 [F_A_x_bal, F_A_y_bal, F_23_x_bal, F_23_y_bal, F_C_x_bal, F_34_bal, F_38_bal, F_D_x_bal, F_D_y_bal, F_56_x_bal, F_56_y_bal, F_67_x_bal, F_67_y_bal,...
     F_G_x_bal, F_G_y_bal, F_H_x_bal, F_H_y_bal, F_910_x_bal, F_910_y_bal, F_1011_x_bal, F_1011_y_bal, F_K_x_bal, F_K_y_bal, M_A_bal] = ...
-    dynamics_4bar_balanced(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
+    dynamics_9bar_balanced(phi2,phi3,phi4,phi5,phi6,phi7,phi8,phi9,phi10,phi11,...
 dphi2,dphi3,dphi4, dphi6, dphi7, dphi8, dphi10, dphi11,...
 ddphi2,ddphi3,ddphi4,ddphi6, ddphi7, ddphi8, ddphi10, ddphi11,...
 r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,rwing,rmax4,rmax8,...
 m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,mwing,...
 X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,Xwing,...
 Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Ywing,...
-J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_4bar);
+J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,t,fig_dyn_9bar);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
