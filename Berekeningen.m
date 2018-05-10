@@ -10,6 +10,6 @@ Lift = out.S;
 normalForce = out.normalforce_tot;
 
 k = 331.8*cosd(25.33)/14.99;
-
+[Springconstant_optimal, Fv0_optimal] = spring(Lift, F_load, F_inert, Pressure_Angle)
 
 
