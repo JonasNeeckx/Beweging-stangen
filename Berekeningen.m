@@ -14,7 +14,7 @@ Omega_rad = rpm*2*pi/60;
 normalForce = out.normalforce_tot;
 
 k = 331.8*cosd(25.33)/14.99;
-[Springconstant_optimal, Fv0_optimal] = spring(Lift, F_load, F_inert, Pressure_Angle)
+[Springconstant_optimal, Fv0_optimal,optimal_N] = spring(S, F_load, F_inert, Pressure_Angle)
 
 
 %% Geometry of the follower
