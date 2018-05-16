@@ -17,6 +17,7 @@ normalForce = out.normalforce_tot;
 xcam = out.xcam;
 ycam = out.ycam;
 k = 331.8*cosd(25.33)/14.99;
+
 out_no_e = load('halfcycloiden_no_exc');
 Pressure_Angle_no_e = out_no_e.pressure_angle;
 V_no_e = out_no_e.V;
