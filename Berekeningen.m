@@ -22,7 +22,7 @@ out_no_e = load('halfcycloiden_no_exc');
 Pressure_Angle_no_e = out_no_e.pressure_angle;
 V_no_e = out_no_e.V;
 normalForce_no_e = out_no_e.normalforce_tot;
-
+% % 
 %% Geometry of the follower
 %base circle and radius of the follower
 
@@ -40,5 +40,14 @@ instantanious_power_no_e = instantaniousPower(normalForce_no_e,Pressure_Angle_no
 %average power
 average_power = mean(instantanious_power);
 
+%instantanious torque
+instantanious_torque = instantanious_power./Omega_rad;
 
+%average torque
+average_torque = mean(instantanious_torque);
+
+%% plots
+
+theta = 0:0.01:359.99;
+plot(theta,average_power*ones(size(instantanious_power)),theta,instantanious_power);
 
