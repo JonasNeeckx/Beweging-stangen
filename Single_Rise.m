@@ -1,4 +1,4 @@
-function single_rise = Single_Rise(zeta,Springconstant_optimal,theta)
+function single_rise = Single_Rise(zeta,omega,Springconstant_optimal,theta)
 
 %Rise from 200 till 280 degrees, dwell from 280 till 60 degrees
 rise = 200;

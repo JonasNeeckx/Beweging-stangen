@@ -48,6 +48,12 @@ instantanious_torque = instantanious_power./Omega_rad;
 %average torque
 average_torque = mean(instantanious_torque);
 
+% I flywheel
+[I_flywheel,mean_index] = flywheel(instantanious_torque,average_torque,Omega_rad);
+
+% Speed variation
+w = speed_variation(average_torque, instantanious_torque,I_flywheel, Omega_rad-0.0346);
+
 %% Dynamics of a deformable follower
 %single rise
 single_rise = Single_Rise(zeta,Omega_rad,Springconstant_optimal,theta);
