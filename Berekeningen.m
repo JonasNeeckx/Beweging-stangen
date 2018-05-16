@@ -1,6 +1,6 @@
 %% Load parameters
 clear; clc; 
-out = load('halfcycloiden.mat');
+out = load('halfcycloiden2.mat');
 F_inert = out.normalforce_acc;
 F_load = out.normalforce_load;
 Pressure_Angle = out.pressure_angle;
@@ -23,7 +23,7 @@ Pressure_Angle_no_e = out_no_e.pressure_angle;
 V_no_e = out_no_e.V;
 normalForce_no_e = out_no_e.normalforce_tot;
 zeta = 0.1;
-theta = out.theta
+theta = out.theta;
 %% Geometry of the follower
 %base circle and radius of the follower
 
@@ -42,7 +42,7 @@ instantanious_power_no_e = instantaniousPower(normalForce_no_e,Pressure_Angle_no
 average_power = mean(instantanious_power);
 
 %single rise
-single_rise = Single_Rise(zeta,Omega_rad,Springconstant_optimal,theta);
+single_rise = Single_Rise(zeta,Springconstant_optimal,theta,Omega_rad,Mass,S);
 
 
 
