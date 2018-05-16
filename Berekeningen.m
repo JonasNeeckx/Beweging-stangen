@@ -22,7 +22,9 @@ out_no_e = load('halfcycloiden_no_exc');
 Pressure_Angle_no_e = out_no_e.pressure_angle;
 V_no_e = out_no_e.V;
 normalForce_no_e = out_no_e.normalforce_tot;
-% % 
+zeta = 0.1;
+theta = out.theta;
+
 %% Geometry of the follower
 %base circle and radius of the follower
 
@@ -46,8 +48,11 @@ instantanious_torque = instantanious_power./Omega_rad;
 %average torque
 average_torque = mean(instantanious_torque);
 
-%% plots
+%% Dynamics of a deformable follower
+%single rise
+single_rise = Single_Rise(zeta,Omega_rad,Springconstant_optimal,theta);
 
-theta = 0:0.01:359.99;
+%% plots
+%power
 plot(theta,average_power*ones(size(instantanious_power)),theta,instantanious_power);
 
