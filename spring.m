@@ -1,9 +1,9 @@
-function [Springconstant_optimal, Fv0_optimal] = spring(Lift, F_load, F_inert, Pressure_Angle)
+function [Springconstant_optimal, Fv0_optimal,optimal_N] = spring(S, F_load, F_inert, Pressure_Angle)
 optimal_N = inf;
 
 for Fv0 = 200:.1:300
     for Springconstant = 1.5:0.01:3
-        N = F_load +  + F_inert + (Fv0*ones(size(F_load)) + Springconstant*Lift)./cos(Pressure_Angle);
+        N = F_load +  + F_inert + (Fv0*ones(size(F_load)) + Springconstant*S)./cos(Pressure_Angle);
         Nmax=max(N);
         Nmin=min(N);
         if (Nmax < optimal_N) && (Nmin >= 0)
@@ -13,4 +13,3 @@ for Fv0 = 200:.1:300
         end
     end
 end
-disp(optimal_N);
