@@ -24,6 +24,10 @@ V_no_e = out_no_e.V;
 normalForce_no_e = out_no_e.normalforce_tot;
 zeta = 0.1;
 theta = out.theta;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5b4d4ae5dc5b1b282a41757ca8a1df6cc3420650
 %% Geometry of the follower
 %base circle and radius of the follower
 
@@ -41,8 +45,17 @@ instantanious_power_no_e = instantaniousPower(normalForce_no_e,Pressure_Angle_no
 %average power
 average_power = mean(instantanious_power);
 
+%instantanious torque
+instantanious_torque = instantanious_power./Omega_rad;
+
+%average torque
+average_torque = mean(instantanious_torque);
+
+%% Dynamics of a deformable follower
 %single rise
 single_rise = Single_Rise(zeta,Springconstant_optimal,theta,Omega_rad,Mass,S);
 
-
+%% plots
+%power
+plot(theta,average_power*ones(size(instantanious_power)),theta,instantanious_power);
 
