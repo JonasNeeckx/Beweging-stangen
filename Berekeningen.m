@@ -10,14 +10,13 @@ S = out.S;
 V = out.V;
 bcr = out.bcr;
 rof = out.rof;
-R0 = bcr + rof;Omega_grad = rpm*360/60;
+R0 = bcr + rof;
+Omega_grad = rpm*360/60;
 Omega_rad = rpm*2*pi/60;
 normalForce = out.normalforce_tot;
 xcam = out.xcam;
 ycam = out.ycam;
-
 k = 331.8*cosd(25.33)/14.99;
-
 out_no_e = load('halfcycloiden_no_exc');
 Pressure_Angle_no_e = out_no_e.pressure_angle;
 V_no_e = out_no_e.V;
@@ -31,6 +30,7 @@ e_optimal = optimalExcentricity(S,V,R0);
 
 %% Rigid-body forces
 %dimensionalisation of the spring
+[Springconstant_optimal, Fv0_optimal] = spring(Lift, F_load, F_inert, Pressure_Angle);
 
 %instantaneous power
 instantanious_power = instantaniousPower(normalForce,Pressure_Angle,rpm,V);
