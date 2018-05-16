@@ -48,7 +48,7 @@ theta_dot0 = (2*pi)^2 * ((4*(zeta^2)-1)/((2*pi*lambda)^2));
 X0 = [1/C(2)*theta_dot0; 1/C(2)*theta0];
 
 % compute free response approximation
-gamma_approx = lsim(A,B,C,D, theta(8000,22001), tau(8000,22001), X0);
+gamma_approx = lsim(A,B,C,D, theta, tau, X0);
 
 % compare exponential envelopes of numerical and approximate solutions
 x_0 = gamma_num(8000) - 1;
@@ -79,7 +79,7 @@ axis([0, tau_end, -inf, inf])
 % approximation of response after rise and exponential envelope
 figure
 subplot(2, 1, 1)
-plot(tau(8000:22001), gamma_approx, 'LineWidth', 2)
+plot(tau(8000:22001), gamma_approx(8000:22001), 'LineWidth', 2)
 xlabel('tau [-]')
 ylabel('approximation of free response during dwell [-]')
 axis([1, tau_end, -inf, inf])
@@ -90,7 +90,7 @@ plot(tau(8000:22001),1- A_approx*exp(-zeta*2*pi*lambda*(tau(8000:22001)-1)))
 legend('response', 'exponential envelope')
 
 subplot(2, 1, 2)
-plot(tau(8000:22001), gamma_approx+1 - gamma_num(8000:22001), 'LineWidth', 2)
+plot(tau(8000:22001), gamma_approx(8000:22001) - gamma_num(8000:22001), 'LineWidth', 2)
 xlabel('tau [-]')
 ylabel('difference between numerical and approximate solution [-]')
 axis([1, tau_end, -inf, inf])

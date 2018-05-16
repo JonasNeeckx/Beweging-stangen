@@ -29,24 +29,24 @@ theta = out.theta;
 %base circle and radius of the follower
 
 %excentricity
-e_optimal = optimalExcentricity(S,V,R0);
+%e_optimal = optimalExcentricity(S,V,R0);
 
 %% Rigid-body forces
 %dimensionalisation of the spring
 [Springconstant_optimal, Fv0_optimal] = spring(S, F_load, F_inert, Pressure_Angle);
 
 %instantaneous power
-instantanious_power = instantaniousPower(normalForce,Pressure_Angle,rpm,V);
-instantanious_power_no_e = instantaniousPower(normalForce_no_e,Pressure_Angle_no_e,rpm,V_no_e);
+%instantanious_power = instantaniousPower(normalForce,Pressure_Angle,rpm,V);
+%instantanious_power_no_e = instantaniousPower(normalForce_no_e,Pressure_Angle_no_e,rpm,V_no_e);
 
 %average power
-average_power = mean(instantanious_power);
+%average_power = mean(instantanious_power);
 
 %instantanious torque
-instantanious_torque = instantanious_power./Omega_rad;
+%instantanious_torque = instantanious_power./Omega_rad;
 
 %average torque
-average_torque = mean(instantanious_torque);
+%average_torque = mean(instantanious_torque);
 
 %% Dynamics of a deformable follower
 %single rise
@@ -54,5 +54,5 @@ single_rise = Single_Rise(zeta,Springconstant_optimal,theta,Omega_rad,Mass,S);
 
 %% plots
 %power
-plot(theta,average_power*ones(size(instantanious_power)),theta,instantanious_power);
+%plot(theta,average_power*ones(size(instantanious_power)),theta,instantanious_power);
 
