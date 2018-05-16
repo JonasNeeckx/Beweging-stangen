@@ -19,7 +19,7 @@ function e_optimal = optimalExcentricity(S, V, R0)
 optimal_alpha = inf;
 alpha = zeros(size(S));
 
-for e = -R0:0.01:R0 
+for e = -10:0.01:-4 
     disp(e);
     for i = 1:size(S, 2)
         alpha(i) = atan((V(i)-e)/(sqrt(R0^2-e^2)+S(i)));
