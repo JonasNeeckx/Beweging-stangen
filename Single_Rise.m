@@ -48,7 +48,7 @@ theta_dot0 = (2*pi)^2 * ((4*(zeta^2)-1)/((2*pi*lambda)^2));
 X0 = [1/C(2)*theta_dot0; 1/C(2)*theta0];
 
 % compute free response approximation
-gamma_approx = lsim(A,B,C,D, theta, tau, X0);
+gamma_approx = lsim(A,B,C,D, theta(8000,22001), tau(8000,22001), X0);
 
 % compare exponential envelopes of numerical and approximate solutions
 x_0 = gamma_num(8000) - 1;

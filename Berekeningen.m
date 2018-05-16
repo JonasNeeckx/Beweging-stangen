@@ -24,10 +24,7 @@ V_no_e = out_no_e.V;
 normalForce_no_e = out_no_e.normalforce_tot;
 zeta = 0.1;
 theta = out.theta;
-<<<<<<< HEAD
-=======
 
->>>>>>> 5b4d4ae5dc5b1b282a41757ca8a1df6cc3420650
 %% Geometry of the follower
 %base circle and radius of the follower
 
