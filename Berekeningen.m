@@ -21,7 +21,8 @@ out_no_e = load('halfcycloiden_no_exc');
 Pressure_Angle_no_e = out_no_e.pressure_angle;
 V_no_e = out_no_e.V;
 normalForce_no_e = out_no_e.normalforce_tot;
-
+zeta = 0.1;
+theta = out.theta
 %% Geometry of the follower
 %base circle and radius of the follower
 
@@ -30,7 +31,7 @@ e_optimal = optimalExcentricity(S,V,R0);
 
 %% Rigid-body forces
 %dimensionalisation of the spring
-[Springconstant_optimal, Fv0_optimal] = spring(Lift, F_load, F_inert, Pressure_Angle);
+[Springconstant_optimal, Fv0_optimal] = spring(S, F_load, F_inert, Pressure_Angle);
 
 %instantaneous power
 instantanious_power = instantaniousPower(normalForce,Pressure_Angle,rpm,V);
@@ -38,6 +39,9 @@ instantanious_power_no_e = instantaniousPower(normalForce_no_e,Pressure_Angle_no
 
 %average power
 average_power = mean(instantanious_power);
+
+%single rise
+single_rise = Single_Rise(zeta,Omega_rad,Springconstant_optimal,theta);
 
 
 
