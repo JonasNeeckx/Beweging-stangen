@@ -34,7 +34,7 @@ e_optimal = optimalExcentricity(S,V,R0);
 
 %% Rigid-body forces
 %dimensionalisation of the spring
-[Springconstant_optimal, Fv0_optimal] = spring(S, F_load, F_inert, Pressure_Angle);
+[ks, Fv0_optimal] = spring(S, F_load, F_inert, Pressure_Angle);
 
 %instantaneous power
 instantaneous_power = instantaniousPower(normalForce,Pressure_Angle,rpm,V);
@@ -59,5 +59,5 @@ w = speed_variation(average_torque, instantanious_torque,I_flywheel, mean_index,
 
 %% Dynamics of a deformable follower
 %single rise
-Single_Rise(zeta,Springconstant_optimal,theta1,Omega_rad,Mass,S,normalForce)
+Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
 
