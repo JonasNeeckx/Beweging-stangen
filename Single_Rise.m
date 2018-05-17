@@ -1,4 +1,4 @@
-function Single_Rise(zeta,Springconstant_optimal,theta,Omega_rad,Mass,S)
+function Single_Rise(zeta,Springconstant_optimal,theta1,Omega_rad,Mass,S,normalForce)
 
 disp(["start Single rise analysis"])
 %Rise from 200 till 280 degrees, dwell from 280 till 60 degrees
@@ -9,9 +9,9 @@ t1 = ((dwell - rise)*pi)/(180*Omega_rad);
 tau_end = (d_end-rise+360)/(dwell-rise);
 lambda = 0.75/zeta;
 
-kfmin = Mass*((0.75*2*pi)/(zeta*t1))^2 - Springconstant_optimal;
+kf = Mass*((0.75*2*pi)/(zeta*t1))^2 - Springconstant_optimal;
 
-wn = sqrt((Springconstant_optimal + kfmin)/Mass);
+wn = sqrt((Springconstant_optimal + kf)/Mass);
 tn = (2*pi)/wn;
 lambda2 = t1/tn;
 
@@ -26,7 +26,7 @@ d_end_index = 36000 + 100*d_end;
 
 % create tau for single rise by extending theta vector (dwell ends after
 % vector ends)
-extended_time = [theta, (theta(2:36000) + theta(36000))];
+extended_time = [theta1, (theta1(2:36000) + theta1(36000))];
 rescaled_time = (extended_time - extended_time(rise_index))/(extended_time(dwell_index) - extended_time(rise_index));
 tau = rescaled_time(rise_index:d_end_index);
 
@@ -95,4 +95,96 @@ plot(tau(8000:22001), gamma_approx(8000:22001) - gamma_num(8000:22001), 'LineWid
 xlabel('tau [-]')
 ylabel('difference between numerical and approximate solution [-]')
 axis([1, tau_end, -inf, inf])
+
+%%% MULTI RISE ANALYSIS %%%%
+
+% define system
+lambda_tilde = 2/tn;
+numerator2 = (2*pi*lambda_tilde)^2;
+denominator2 = [1, 2*zeta*(2*pi*lambda_tilde), (2*pi*lambda_tilde)^2];
+sys2 = tf(numerator2, denominator2);
+
+% construct full input
+tau_MR = theta1/(2*pi);
+input_MR1 = 0.015*((tau_MR - 60/360)/(60/360) - sin(2*pi*(tau_MR - 60/360)/(60/360))/(2*pi));
+input_MR2 = 0.015 + 0.015*((tau_MR - 120/360)/(60/360) - sin(2*pi*(tau_MR - 120/360)/(60/360))/(2*pi));
+input_MR3 = 0.03*(1 - (tau_MR - 200/360)/(80/360) + sin(2*pi*(tau_MR - 200/360)/(80/360))/(2*pi));
+
+input_MR = zeros(size(tau_MR));
+input_MR(6001:12001) = input_MR1(6001:12001);
+input_MR(12001:18001) = input_MR2(12001:18001);
+input_MR(20001:28001) = input_MR3(20001:28001);
+
+% nondimensionalise by dividing by highest peak
+input_MR = input_MR/0.03;
+
+% compute fourier series of multi rise input
+N = 100; % number of terms
+[a, b, input_fourier_MR] = Fseries(tau_MR, input_MR, N);
+
+% compute analytical result with fourier coefficients
+c = zeros(N, 1);
+d = zeros(N, 1);
+
+for k = 1:N
+    c(k) = (-2*zeta*k*b(k)/lambda_tilde + a(k+1)*(1 - ((k/lambda_tilde)^2)))/(((2*zeta*k/lambda_tilde)^2) + ((1 - ((k/lambda_tilde)^2))^2));
+    d(k) = (2*zeta*k*a(k+1)/lambda_tilde + b(k)*(1 - ((k/lambda_tilde)^2)))/(((2*zeta*k/lambda_tilde)^2) + ((1 - ((k/lambda_tilde)^2))^2));
+end
+
+gamma_anal_MR = 0.5*a(1)*ones(size(tau_MR));
+
+for k = 1:N
+    gamma_anal_MR = gamma_anal_MR + c(k)*cos(2*pi*k*(tau_MR + 0.5)) + d(k)*sin(2*pi*k*(tau_MR + 0.5));
+end
+
+% compute multi rise numerical response with lsim
+gamma_num_MR = lsim(sys2, input_MR, tau_MR);
+
+%%%% PLOT MULTI RISE RESULTS %%%%
+figure
+subplot(2, 1, 1)
+plot(tau_MR, gamma_num_MR, 'LineWidth', 2)
+xlabel('tau [-]')
+ylabel('numerical solution [-]')
+axis([0, 1, -inf, inf])
+
+subplot(2, 1, 2)
+plot(tau_MR, input_MR.' - gamma_num_MR, 'LineWidth', 2)
+xlabel('tau [-]')
+ylabel('input-output difference for numerical solution [-]')
+axis([0, 1, -inf, inf])
+
+figure
+plot(tau_MR, gamma_num_MR - gamma_anal_MR.', 'LineWidth', 2)
+xlabel('tau [-]')
+ylabel(strcat('difference between numerical and analytical solution with ', num2str(N), ' fourier terms [-]'))
+axis([0, 1, -inf, inf])
+
+%%%% COMPARE SINGLE AND MULTI RISE %%%%
+figure
+subplot(2, 1, 1)
+plot(tau_MR(20001:end), -theta(1:16000) - input_MR(20001:end) + 1, 'LineWidth', 2)
+xlabel('tau [-]')
+ylabel('difference in input between multi-rise and single-rise [-]')
+axis([120/360, 1, -inf, inf])
+
+subplot(2, 1, 2)
+plot(tau_MR(20001:end), -gamma_num(1:16000) - gamma_num_MR(20001:end) + 1, 'LineWidth', 2)
+xlabel('tau [-]')
+ylabel('difference in response between multi-rise and single-rise [-]')
+axis([120/360, 1, -inf, inf])
+
+%%%% FORCE ANALYSIS %%%%
+
+force = kf*0.03*(input_MR - gamma_num_MR.');
+figure
+plot(tau_MR, force, 'LineWidth', 2)
+xlabel('tau [-]')
+ylabel('resulting force between follower and cam')
+axis([0, 1, -inf, inf])
+
+figure
+plot(theta1, normalForce + force)
+
+
 

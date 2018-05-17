@@ -23,7 +23,8 @@ Pressure_Angle_no_e = out_no_e.pressure_angle;
 V_no_e = out_no_e.V;
 normalForce_no_e = out_no_e.normalforce_tot;
 zeta = 0.1;
-theta = out.theta;
+theta1 = out.theta;
+theta = theta1;
 
 %% Geometry of the follower
 %base circle and radius of the follower
@@ -58,5 +59,5 @@ w = speed_variation(average_torque, instantanious_torque,I_flywheel, mean_index,
 
 %% Dynamics of a deformable follower
 %single rise
-Single_Rise(zeta,Springconstant_optimal,theta,Omega_rad,Mass,S)
+Single_Rise(zeta,Springconstant_optimal,theta1,Omega_rad,Mass,S,normalForce)
 
