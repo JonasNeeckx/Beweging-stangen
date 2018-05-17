@@ -59,5 +59,5 @@ w = speed_variation(average_torque, instantanious_torque,I_flywheel, mean_index,
 
 %% Dynamics of a deformable follower
 %single rise
-Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
+epsilon = Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce);
 

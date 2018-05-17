@@ -1,6 +1,6 @@
-function Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
+function eps = Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
 
-disp(["start Single rise analysis"])
+disp("start Single rise analysis")
 %Rise from 200 till 280 degrees, dwell from 280 till 60 degrees
 rise = 200;
 dwell = 280;
@@ -13,17 +13,10 @@ kf = Mass*((2*pi*lambda)/(t1))^2 - ks;
 
 tau = 0:(tau_end/22000):tau_end;
 
-approx_theta = (((2*pi)^2*((tau - 1).^3))./factorial(3)) + 1;
-
 Rise = zeros(size(tau));
 Rise(1:16001) = S(20000:36000);
 Rise(16002:22001) = S(1:6000);
-theta = Rise./30;
-
-figure
-plot(tau,theta)
-xlabel('tau [-]')
-ylabel('theta [-]')
+theta = (Rise)./30;
 
 % The system doesn't start from lift and speed equal to zero
 numerator = (2*pi*lambda)^2;
@@ -34,7 +27,17 @@ theta_dot0 = 0;
 X0 = [1/C(2)*theta_dot0; 1/C(2)*theta0];
 
 gamma_num = lsim(A,B,C,D, theta, tau, X0);
+
 figure
+subplot(2,2,1)
+plot(tau,theta)
+xlabel('tau [-]')
+ylabel('theta [-]')
+subplot(2,2,2)
+plot(tau,gamma_num)
+xlabel('tau [-]')
+ylabel('gamma_num [-]')
+subplot(2,2,3)
 plot(tau, theta-gamma_num.')
 xlabel('tau [-]')
 ylabel('theta - gamma [-]')
@@ -42,12 +45,10 @@ ylabel('theta - gamma [-]')
 x_0 = gamma_num(8001);
 lambda_d = lambda * sqrt(1 - zeta^2);
 dx_0 = ((gamma_num(8002) - gamma_num(8000))/(2*0.000125));
-A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2))
-A_approx = (((2*pi)^2)/((2*pi*lambda)^3));
-gamma_approx = zeros(size(tau));
-for i = 8001:length(tau)
-gamma_approx(i) = 1+A_num*exp(-zeta*(2*pi*lambda)*(tau(i)-1))*cos(2*pi*lambda_d*(tau(i)-1));
-end
+A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2));
+A_approx = (((2*pi)^2)/((2*pi*lambda)^3))*sqrt(1/(1-zeta^2));
+
+eps = (A_num-A_approx)/A_num;
 
 %%% MULTI RISE ANALYSIS %%%%
 
@@ -105,7 +106,7 @@ xlabel('tau_multi [-]')
 ylabel('theta_multi - gamma_num_multi [-]')
 subplot(2,1,2)
 plot(tau_multi,theta_multi-gamma_anal_multi)
-xlabel('tau [-]')
+xlabel('tau_multi [-]')
 ylabel('theta_multi - gamma_anal_multi [-]')
 
 theta_multi2=size(tau);
