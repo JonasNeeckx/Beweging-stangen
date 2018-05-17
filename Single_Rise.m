@@ -50,7 +50,7 @@ plot(tau, (approx_theta/30)-gamma_approx.')
 xlabel('tau [-]')
 ylabel('theta_approx - gamma_approx [-]')
 
-x_0 = gamma_num(8001) - 1;
+x_0 = gamma_num(8001);
 lambda_d = lambda * sqrt(1 - zeta^2);
 dx_0 = ((gamma_num(8002) - gamma_num(8000))/(2*0.000125));
 A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2))
