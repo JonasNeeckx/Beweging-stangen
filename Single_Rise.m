@@ -9,7 +9,11 @@ t1 = ((dwell - rise)*pi)/(180*Omega_rad);
 tau_end = (d_end-rise+360)/(dwell-rise);
 lambda = 0.75/zeta;
 
+<<<<<<< HEAD
 kf = Mass*((2*pi*lambda)/(t1))^2 - ks;
+=======
+kf = Mass*((2*pi*lambda)/(t1))^2;
+>>>>>>> c1429cfd90012f2b85989c9aa27909ad5b7d69db
 
 tau = 0:(tau_end/22000):tau_end;
 
@@ -17,23 +21,29 @@ numerator = (2*pi*lambda)^2;
 denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
 sys = tf(numerator, denominator);
 
-approx_theta = (((2*pi)^2*((tau - 1).^3))/factorial(3)) + 1;
+approx_theta = (((2*pi)^2*((tau - 1).^3))./factorial(3)) + 1;
 
 Rise = zeros(size(tau));
 Rise(1:16001) = S(20000:36000);
 Rise(16002:22001) = S(1:6000);
-theta = (-30+Rise)./-30;
+theta = Rise./30;
+figure
+plot(tau,theta)
+xlabel('tau [-]')
+ylabel('theta [-]')
 
 gamma_num = lsim(sys, theta, tau); %if the system starts from lift and speed equal to zero
+% figure
+% plot(tau, theta-gamma_num)
 
 % The system doesn't start from lift and speed equal to zero
-theta0 = (2*pi)^2 * ((2*zeta - 2*zeta*(4*(zeta^2)-1))/((2*pi*lambda)^3));
-theta_dot0 = (2*pi)^2 * ((4*(zeta^2)-1)/((2*pi*lambda)^2));
+theta0 = 1;
+theta_dot0 = 0;
 [A,B,C,D] = tf2ss(numerator,denominator);
 X0 = [1/C(2)*theta_dot0; 1/C(2)*theta0];
 
 % compute free response approximation
-gamma_approx = lsim(A,B,C,D, theta, tau, X0);
+gamma_approx = lsim(A,B,C,D, approx_theta, tau, X0);
 
 % compare exponential envelopes of numerical and approximate solutions
 x_0 = gamma_num(8000) - 1;
@@ -83,7 +93,11 @@ axis([1, tau_end, -inf, inf])
 %%% MULTI RISE ANALYSIS %%%%
 
 % define system
+<<<<<<< HEAD
 wn = sqrt((ks + kf)/Mass);
+=======
+wn = sqrt((kf)/Mass);
+>>>>>>> c1429cfd90012f2b85989c9aa27909ad5b7d69db
 tn = (2*pi)/wn;
 lambda_tilde = 2/tn;
 numerator2 = (2*pi*lambda_tilde)^2;
@@ -162,7 +176,7 @@ axis([120/360, 1, -inf, inf])
 
 %%%% FORCE ANALYSIS %%%%
 
-force = kf*0.03*(input_MR - gamma_num_MR.');
+force = kf*0.03*(input_MR - gamma_num_MR.')*10^-3;
 figure
 plot(tau_MR, force, 'LineWidth', 2)
 xlabel('tau [-]')
