@@ -9,40 +9,24 @@ t1 = ((dwell - rise)*pi)/(180*Omega_rad);
 tau_end = (d_end-rise+360)/(dwell-rise);
 lambda = 0.75/zeta;
 
-kf = Mass*((0.75*2*pi)/(zeta*t1))^2 - Springconstant_optimal;
+kf = Mass*((2*pi*lambda)/(t1))^2 - Springconstant_optimal;
 
-wn = sqrt((Springconstant_optimal + kf)/Mass);
-tn = (2*pi)/wn;
-lambda2 = t1/tn;
-
-decay1 = exp(-zeta*2*pi*lambda*(tau_end - 1));
-decay2 = exp(-zeta*2*pi*lambda);
-
-
-% find indices of events
-rise_index = 100*rise;
-dwell_index = 100*dwell;
-d_end_index = 36000 + 100*d_end;
-
-% create tau for single rise by extending theta vector (dwell ends after
-% vector ends)
-extended_time = [theta1, (theta1(2:36000) + theta1(36000))];
-rescaled_time = (extended_time - extended_time(rise_index))/(extended_time(dwell_index) - extended_time(rise_index));
-tau = rescaled_time(rise_index:d_end_index);
+tau = [0:(tau_end/22000):2.75];
 
 numerator = (2*pi*lambda)^2;
 denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
 sys = tf(numerator, denominator);
 
-approx_input = (((2*pi)^2*((tau - 1).^3))/factorial(3)) + 1;
+approx_theta = (((2*pi)^2*((tau - 1).^3))/factorial(3)) + 1;
 
-extended_rise = [S, S(2:36000)];
-rescaled_rise = (extended_rise - extended_rise(rise_index))/(extended_rise(dwell_index) - extended_rise(rise_index));
-theta = rescaled_rise(rise_index:d_end_index);
+Rise = zeros(size(tau));
+Rise(1:16001) = S(20000:36000);
+Rise(16002:22001) = S(1:6000);
+theta = (-30+Rise)./-30;
 
-gamma_num = lsim(sys, theta, tau);
+gamma_num = lsim(sys, theta, tau); %if the system starts from lift and speed equal to zero
 
-% starting conditions for free response approximation
+% The system doesn't start from lift and speed equal to zero
 theta0 = (2*pi)^2 * ((2*zeta - 2*zeta*(4*(zeta^2)-1))/((2*pi*lambda)^3));
 theta_dot0 = (2*pi)^2 * ((4*(zeta^2)-1)/((2*pi*lambda)^2));
 [A,B,C,D] = tf2ss(numerator,denominator);
@@ -69,7 +53,7 @@ xlabel('tau [-]')
 ylabel('numerical solution [-]')
 axis([0, tau_end, -inf, inf])
 % hold on
-% plot(tau_SR(interval), 1 + A_num*exp(-zdeta*2*pi*lambda*(tau_SR(interval) - 1)))
+% plot(tau(interval), 1 + A_num*exp(-zdeta*2*pi*lambda*(tau(interval) - 1)))
 
 subplot(2, 1, 2)
 plot(tau(interval), theta(interval) - gamma_num(interval).', 'LineWidth', 2)
@@ -99,6 +83,8 @@ axis([1, tau_end, -inf, inf])
 %%% MULTI RISE ANALYSIS %%%%
 
 % define system
+wn = sqrt((Springconstant_optimal + kf)/Mass);
+tn = (2*pi)/wn;
 lambda_tilde = 2/tn;
 numerator2 = (2*pi*lambda_tilde)^2;
 denominator2 = [1, 2*zeta*(2*pi*lambda_tilde), (2*pi*lambda_tilde)^2];
@@ -120,7 +106,7 @@ input_MR = input_MR/0.03;
 
 % compute fourier series of multi rise input
 N = 100; % number of terms
-[a, b, input_fourier_MR] = Fseries(tau_MR, input_MR, N);
+[a, b] = Fseries(tau_MR, input_MR, N);
 
 % compute analytical result with fourier coefficients
 c = zeros(N, 1);
@@ -134,7 +120,7 @@ end
 gamma_anal_MR = 0.5*a(1)*ones(size(tau_MR));
 
 for k = 1:N
-    gamma_anal_MR = gamma_anal_MR + c(k)*cos(2*pi*k*(tau_MR + 0.5)) + d(k)*sin(2*pi*k*(tau_MR + 0.5));
+    gamma_anal_MR = gamma_anal_MR + c(k)*cos(2*pi*k*(tau_MR)) + d(k)*sin(2*pi*k*(tau_MR));
 end
 
 % compute multi rise numerical response with lsim
