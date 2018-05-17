@@ -28,7 +28,7 @@ plot(tau,theta)
 xlabel('tau [-]')
 ylabel('theta [-]')
 
-gamma_num = lsim(sys, theta, tau); %if the system starts from lift and speed equal to zero
+% gamma_num1 = lsim(sys, theta, tau); %if the system starts from lift and speed equal to zero
 % figure
 % plot(tau, theta-gamma_num)
 
@@ -39,8 +39,11 @@ theta_dot0 = 0;
 X0 = [1/C(2)*theta_dot0; 1/C(2)*theta0];
 
 % compute free response approximation
-gamma_approx = lsim(A,B,C,D, approx_theta, tau, X0);
-
+gamma_num2 = lsim(A,B,C,D, theta, tau, X0);
+figure
+plot(tau, theta-gamma_num.')
+xlabel('tau [-]')
+ylabel('numerical: theta - gamma [-]')
 % compare exponential envelopes of numerical and approximate solutions
 x_0 = gamma_num(8000) - 1;
 lambda_d = lambda * sqrt(1 - zeta^2);
