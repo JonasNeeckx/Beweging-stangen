@@ -39,29 +39,15 @@ plot(tau, theta-gamma_num.')
 xlabel('tau [-]')
 ylabel('theta - gamma [-]')
 
-gamma_approx = lsim(A,B,C,D, approx_theta/30, tau, X0);
-figure
-plot(tau, (approx_theta/30)-gamma_approx.')
-xlabel('tau [-]')
-ylabel('theta_approx - gamma_approx [-]')
-
-figure
-subplot(2,1,1)
-plot(tau, theta-(approx_theta/30))
-xlabel('tau [-]')
-ylabel('theta - approx_theta [-]')
-subplot(2,1,2)
-plot(tau,gamma_num.' - gamma_approx.')
-xlabel('tau [-]')
-ylabel('gamma_num - gamma_approx [-]')
-
-
-
-x_0 = gamma_num(8000) - 1;
+x_0 = gamma_num(8001);
 lambda_d = lambda * sqrt(1 - zeta^2);
-dx_0 = ((gamma_num(8001) - gamma_num(7999))/(2*0.000125));
+dx_0 = ((gamma_num(8002) - gamma_num(8000))/(2*0.000125));
 A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2))
-A_approx = (((2*pi)^2)/((2*pi*lambda)^3))
+A_approx = (((2*pi)^2)/((2*pi*lambda)^3));
+gamma_approx = zeros(size(tau));
+for i = 8001:length(tau)
+gamma_approx(i) = 1+A_num*exp(-zeta*(2*pi*lambda)*(tau(i)-1))*cos(2*pi*lambda_d*(tau(i)-1));
+end
 
 %%% MULTI RISE ANALYSIS %%%%
 
