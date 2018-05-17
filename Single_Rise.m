@@ -1,5 +1,6 @@
-function single_rise = Single_Rise(zeta,Springconstant_optimal,theta,Omega_rad,Mass,S)
+function Single_Rise(zeta,Springconstant_optimal,theta,Omega_rad,Mass,S)
 
+disp(["start Single rise analysis"])
 %Rise from 200 till 280 degrees, dwell from 280 till 60 degrees
 rise = 200;
 dwell = 280;
