@@ -1,4 +1,4 @@
-function Single_Rise(zeta,Springconstant_optimal,theta1,Omega_rad,Mass,S,normalForce)
+function Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
 
 disp(["start Single rise analysis"])
 %Rise from 200 till 280 degrees, dwell from 280 till 60 degrees
@@ -9,9 +9,13 @@ t1 = ((dwell - rise)*pi)/(180*Omega_rad);
 tau_end = (d_end-rise+360)/(dwell-rise);
 lambda = 0.75/zeta;
 
+<<<<<<< HEAD
+kf = Mass*((2*pi*lambda)/(t1))^2 - ks;
+=======
 kf = Mass*((2*pi*lambda)/(t1))^2;
+>>>>>>> c1429cfd90012f2b85989c9aa27909ad5b7d69db
 
-tau = [0:(tau_end/22000):2.75];
+tau = 0:(tau_end/22000):tau_end;
 
 numerator = (2*pi*lambda)^2;
 denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
@@ -92,7 +96,11 @@ axis([1, tau_end, -inf, inf])
 %%% MULTI RISE ANALYSIS %%%%
 
 % define system
+<<<<<<< HEAD
+wn = sqrt((ks + kf)/Mass);
+=======
 wn = sqrt((kf)/Mass);
+>>>>>>> c1429cfd90012f2b85989c9aa27909ad5b7d69db
 tn = (2*pi)/wn;
 lambda_tilde = 2/tn;
 numerator2 = (2*pi*lambda_tilde)^2;
