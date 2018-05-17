@@ -1,6 +1,6 @@
-function Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
+function eps = Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
 
-disp(["start Single rise analysis"])
+disp("start Single rise analysis")
 %Rise from 200 till 280 degrees, dwell from 280 till 60 degrees
 rise = 200;
 dwell = 280;
@@ -12,8 +12,6 @@ lambda = 0.75/zeta;
 kf = Mass*((2*pi*lambda)/(t1))^2 - ks*10^3;
 
 tau = 0:(tau_end/22000):tau_end;
-
-approx_theta = (((2*pi)^2*((tau - 1).^3))./factorial(3)) + 1;
 
 Rise = zeros(size(tau));
 Rise(1:16001) = S(20000:36000);
@@ -44,17 +42,13 @@ plot(tau, theta-gamma_num.')
 xlabel('tau [-]')
 ylabel('theta - gamma [-]')
 
-gamma_approx = lsim(A,B,C,D, approx_theta/30, tau, X0);
-figure
-plot(tau, (approx_theta/30)-gamma_approx.')
-xlabel('tau [-]')
-ylabel('theta_approx - gamma_approx [-]')
-
 x_0 = gamma_num(8001);
 lambda_d = lambda * sqrt(1 - zeta^2);
 dx_0 = ((gamma_num(8002) - gamma_num(8000))/(2*0.000125));
-A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2))
-A_approx = (((2*pi)^2)/((2*pi*lambda)^3))*sqrt(1/(1-zeta^2))
+A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2));
+A_approx = (((2*pi)^2)/((2*pi*lambda)^3))*sqrt(1/(1-zeta^2));
+
+eps = (A_num-A_approx)/A_num;
 
 %%% MULTI RISE ANALYSIS %%%%
 
