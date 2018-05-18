@@ -55,9 +55,9 @@ disp("start Multi rise analysis")
 %Multi
 wn = sqrt((ks*10^3 + kf)/Mass);
 tn = (2*pi)/wn;
-lambda_tilde = 2/tn;
-numerator2 = (2*pi*lambda_tilde)^2;
-denominator2 = [1, 2*zeta*(2*pi*lambda_tilde), (2*pi*lambda_tilde)^2];
+lambda_2 = 2/tn;
+numerator2 = (2*pi*lambda_2)^2;
+denominator2 = [1, 2*zeta*(2*pi*lambda_2), (2*pi*lambda_2)^2];
 sys2 = tf(numerator2, denominator2);
 
 % construct theta
@@ -89,8 +89,8 @@ c = zeros(N, 1);
 d = zeros(N, 1);
 
 for k = 1:N
-    c(k) = (-2*zeta*k*b(k)/lambda_tilde + a(k+1)*(1 - ((k/lambda_tilde)^2)))/(((2*zeta*k/lambda_tilde)^2) + ((1 - ((k/lambda_tilde)^2))^2));
-    d(k) = (2*zeta*k*a(k+1)/lambda_tilde + b(k)*(1 - ((k/lambda_tilde)^2)))/(((2*zeta*k/lambda_tilde)^2) + ((1 - ((k/lambda_tilde)^2))^2));
+    c(k) = (-2*zeta*k*b(k)/lambda_2 + a(k+1)*(1 - ((k/lambda_2)^2)))/(((2*zeta*k/lambda_2)^2) + ((1 - ((k/lambda_2)^2))^2));
+    d(k) = (2*zeta*k*a(k+1)/lambda_2 + b(k)*(1 - ((k/lambda_2)^2)))/(((2*zeta*k/lambda_2)^2) + ((1 - ((k/lambda_2)^2))^2));
 end
 
 gamma_anal_multi = 0.5*a(1)*ones(size(tau_multi));
