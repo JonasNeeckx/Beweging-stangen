@@ -46,16 +46,23 @@ average_power = mean(instantaneous_power);
 plot_power(average_power, instantaneous_power, instantaneous_power_no_e, theta)
 
 %instantanious torque
-instantanious_torque = instantaneous_power./Omega_rad;
+instantaneous_torque = instantaneous_power./Omega_rad;
 
 %average torque
-average_torque = mean(instantanious_torque);
+average_torque = mean(instantaneous_torque);
+
+%plot torque
+figure 
+plot(180/pi*theta, instantaneous_torque, 180/pi*theta, average_torque*ones(size(instantaneous_torque)))
+xlabel('theta [°]')
+ylabel('Torque [Nm]')
+legend('Instantaneous torque', 'Average torque')
 
 % I flywheel
-[I_flywheel,mean_index] = flywheel(instantanious_torque,average_torque,Omega_rad);
+[I_flywheel,mean_index] = flywheel(instantaneous_torque,average_torque,Omega_rad);
 
 % Speed variation
-w = speed_variation(average_torque, instantanious_torque,I_flywheel, mean_index, Omega_rad);
+w = speed_variation(average_torque, instantaneous_torque,I_flywheel, mean_index, Omega_rad);
 
 %% Dynamics of a deformable follower
 %single rise

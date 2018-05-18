@@ -1,4 +1,4 @@
-function [Springconstant_optimal, Fv0_optimal,optimal_N] = spring(S, F_load, F_inert, Pressure_Angle)
+function [Springconstant_optimal, Fv0_optimal,optimal_Nmax] = spring(S, F_load, F_inert, Pressure_Angle)
 %SPRING calculates the optimal values for the spring applied on a cam.
 %These are obtained by looking for an arrangement where the maximal normal
 %force is minimal. 
@@ -20,17 +20,20 @@ function [Springconstant_optimal, Fv0_optimal,optimal_N] = spring(S, F_load, F_i
 %           The optimal spring constant [N/mm]
 %@result Fv0_optimal
 %           The optimal prestress [N]
-disp(["calculating optimal spring setting"])
+disp("calculating optimal spring setting")
 
-optimal_N = inf;
+optimal_Nmax = inf;
+optimal_Nmean = inf; 
 
-for Fv0 = 200:.1:300
-    for Springconstant = 2:0.01:2.5
-        N = F_load +  + F_inert + (Fv0*ones(size(F_load)) + Springconstant*S)./cos(Pressure_Angle);
+for Fv0 = 220:0.1:230
+    for Springconstant = 5:0.01:5.5
+        N = F_load +  4*F_inert + (Fv0*ones(size(F_load)) + Springconstant*S)./cos(Pressure_Angle);
         Nmax=max(N);
         Nmin=min(N);
-        if (Nmax < optimal_N) && (Nmin >= 0)
-            optimal_N = Nmax;
+        Nmean = mean(N);
+        if ((Nmax < optimal_Nmax) && (Nmin >= 0)||((Nmax == optimal_Nmax) && (Nmean < optimal_Nmean)))
+            optimal_Nmax = Nmax;
+            optimal_Nmean = Nmean;
             Springconstant_optimal = Springconstant;
             Fv0_optimal = Fv0;
         end

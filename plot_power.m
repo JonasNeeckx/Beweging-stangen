@@ -14,6 +14,7 @@ function plot_power(average_power, instantaneous_power, instantaneous_power_no_e
 disp(['Power calculated'])
 
 control_power = instantaneous_power-instantaneous_power_no_e;
+theta = theta/pi*180;
 
 figure 
 subplot(211)

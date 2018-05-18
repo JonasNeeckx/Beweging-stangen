@@ -38,7 +38,7 @@ for i = i_mean+1:i_mean+dim-1
         prev = index-1;
     end
     
-    w(index) = w(prev)+2*pi/size(instantaneous_torque,2)*(instantaneous_torque(index)-average_torque)/(I*w(prev));
+    w(index) = w(prev)-2*pi/size(instantaneous_torque,2)*(instantaneous_torque(index)-average_torque)/(I*w(prev));
 end
 
 figure 
@@ -50,4 +50,4 @@ ylabel('Rotational speed [rad/s]')
 subplot(212)
 plot(theta, w/w_mean)
 xlabel('theta [°]')
-ylabel('Relative variation of the rotational speed with respect to the imposed 30 rpm [~]')
+ylabel('Relative variation of the rotational speed[~]')
