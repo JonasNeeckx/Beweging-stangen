@@ -42,17 +42,17 @@ plot(tau, theta-gamma_num.')
 xlabel('tau [-]')
 ylabel('theta - gamma [-]')
 
+%Calculating the amplitudes
 x_0 = gamma_num(8001);
 lambda_d = lambda * sqrt(1 - zeta^2);
 dx_0 = ((gamma_num(8002) - gamma_num(8000))/(2*0.000125));
-A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2))
-A_approx = (((2*pi)^2)/((2*pi*lambda)^3))*sqrt(1/(1-zeta^2))
+A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2));
+A_approx = (((2*pi)^2)/((2*pi*lambda)^3))*sqrt(1/(1-zeta^2));
 
-eps = (A_num-A_approx)/A_num
+eps = (A_num-A_approx)/A_num;
 
-%%% MULTI RISE ANALYSIS %%%%
-
-% define system
+disp("start Multi rise analysis")
+%Multi
 wn = sqrt((ks*10^3 + kf)/Mass);
 tn = (2*pi)/wn;
 lambda_tilde = 2/tn;
@@ -60,7 +60,7 @@ numerator2 = (2*pi*lambda_tilde)^2;
 denominator2 = [1, 2*zeta*(2*pi*lambda_tilde), (2*pi*lambda_tilde)^2];
 sys2 = tf(numerator2, denominator2);
 
-% construct full input
+% construct theta
 tau_multi = theta1/(2*pi);
 theta_multi1 = 0.015*((tau_multi - 60/360)/(60/360) - sin(pi*(tau_multi - 60/360)/(60/360))/(pi));
 theta_multi2 = 0.015 + 0.015*((tau_multi - 120/360)/(60/360) + sin(pi*(tau_multi - 120/360)/(60/360))/(pi));
@@ -72,17 +72,16 @@ theta_multi(12001:18001) = theta_multi2(12001:18001);
 theta_multi(18001:20001) = 0.03;
 theta_multi(20001:28001) = theta_multi3(20001:28001);
 
-
-
 theta_multi = theta_multi/0.03;
-gamma_num_multi = lsim(sys2, theta_multi, tau_multi);
+gamma_num_multi = lsim(sys2, theta_multi, tau_multi); %system starts from rest
+
 figure
 plot(tau_multi,theta_multi)
 xlabel('tau_multi [-]')
 ylabel('theta_multi [-]')
 
-% compute fourier series of multi rise input
-N = 100; % number of terms
+% Fourier series
+N = 100;
 [a, b] = Fseries(tau_multi, theta_multi, N);
 
 % compute analytical result with fourier coefficients
@@ -145,6 +144,8 @@ figure
 plot(tau_multi,gamma_num_multi.' - gamma_anal_multi)
 xlabel('tau_multi [-]')
 ylabel('gamma_num_multi - gamma_anal_multi [-]')
+
+disp("start Force analysis")
 %%%% FORCE ANALYSIS %%%%
 
 force = kf*0.03*(-theta_multi + gamma_num_multi.')./(cos(Pressure_Angle));
@@ -158,7 +159,7 @@ figure
 plot(theta1, normalForce + force)
 xlabel('theta [-]')
 ylabel('Normal force + vibration force between follower and cam')
-min(normalForce + force)
+min(normalForce + force);
 
 
 
