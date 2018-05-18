@@ -1,4 +1,4 @@
-function eps = Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce)
+function eps = Single_Rise(zeta,ks,theta1,Omega_rad,Mass,S,normalForce,Pressure_Angle)
 
 disp("start Single rise analysis")
 %Rise from 200 till 280 degrees, dwell from 280 till 60 degrees
@@ -9,7 +9,7 @@ t1 = ((dwell - rise)*pi)/(180*Omega_rad);
 tau_end = (d_end-rise+360)/(dwell-rise);
 lambda = 0.75/zeta;
 
-kf = Mass*((2*pi*lambda)/(t1))^2 - ks*10^3;
+kf = Mass*((2*pi*lambda)/(t1))^2 - ks*10^3
 
 tau = 0:(tau_end/22000):tau_end;
 
@@ -45,10 +45,10 @@ ylabel('theta - gamma [-]')
 x_0 = gamma_num(8001);
 lambda_d = lambda * sqrt(1 - zeta^2);
 dx_0 = ((gamma_num(8002) - gamma_num(8000))/(2*0.000125));
-A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2));
-A_approx = (((2*pi)^2)/((2*pi*lambda)^3))*sqrt(1/(1-zeta^2));
+A_num = sqrt(((x_0*2*pi*lambda_d)^2 + (dx_0 + zeta*2*pi*lambda*x_0)^2)/((2*pi*lambda_d)^2))
+A_approx = (((2*pi)^2)/((2*pi*lambda)^3))*sqrt(1/(1-zeta^2))
 
-eps = (A_num-A_approx)/A_num;
+eps = (A_num-A_approx)/A_num
 
 %%% MULTI RISE ANALYSIS %%%%
 
@@ -62,8 +62,8 @@ sys2 = tf(numerator2, denominator2);
 
 % construct full input
 tau_multi = theta1/(2*pi);
-theta_multi1 = 0.015*((tau_multi - 60/360)/(60/360) - sin(2*pi*(tau_multi - 60/360)/(60/360))/(2*pi));
-theta_multi2 = 0.015 + 0.015*((tau_multi - 120/360)/(60/360) - sin(2*pi*(tau_multi - 120/360)/(60/360))/(2*pi));
+theta_multi1 = 0.015*((tau_multi - 60/360)/(60/360) - sin(pi*(tau_multi - 60/360)/(60/360))/(pi));
+theta_multi2 = 0.015 + 0.015*((tau_multi - 120/360)/(60/360) + sin(pi*(tau_multi - 120/360)/(60/360))/(pi));
 theta_multi3 = 0.03*(1 - (tau_multi - 200/360)/(80/360) + sin(2*pi*(tau_multi - 200/360)/(80/360))/(2*pi));
 
 theta_multi = zeros(size(tau_multi));
@@ -73,7 +73,9 @@ theta_multi(18001:20001) = 0.03;
 theta_multi(20001:28001) = theta_multi3(20001:28001);
 
 
+
 theta_multi = theta_multi/0.03;
+gamma_num_multi = lsim(sys2, theta_multi, tau_multi);
 figure
 plot(tau_multi,theta_multi)
 xlabel('tau_multi [-]')
@@ -98,7 +100,10 @@ for k = 1:N
     gamma_anal_multi = gamma_anal_multi + c(k)*cos(2*pi*k*(tau_multi+0.5)) + d(k)*sin(2*pi*k*(tau_multi+0.5));
 end
 
-gamma_num_multi = lsim(sys2, theta_multi, tau_multi);
+figure
+plot(tau_multi,gamma_anal_multi)
+xlabel('tau_multi [-]')
+ylabel('gamma_anal_multi [-]')
 figure
 subplot(2,1,1)
 plot(tau_multi,theta_multi-gamma_num_multi.')
@@ -127,10 +132,6 @@ subplot(2,2,1)
 plot(tau,theta-theta_multi2)
 xlabel('tau [-]')
 ylabel('theta - theta_multi [-]')
-subplot(2,2,2)
-plot(tau_multi2,theta-theta_multi2)
-xlabel('tau [-]')
-ylabel('theta - theta_multi [-]')
 subplot(2,2,3)
 plot(tau,gamma_num-gamma_num_multi2.')
 xlabel('tau [-]')
@@ -140,17 +141,24 @@ plot(tau,gamma_num-gamma_anal_multi2.')
 xlabel('tau [-]')
 ylabel('gamma - gamma_anal_multi [-]')
 
+figure 
+plot(tau_multi,gamma_num_multi.' - gamma_anal_multi)
+xlabel('tau_multi [-]')
+ylabel('gamma_num_multi - gamma_anal_multi [-]')
 %%%% FORCE ANALYSIS %%%%
 
-force = kf*0.03*(theta_multi - gamma_num_multi.');
+force = kf*0.03*(-theta_multi + gamma_num_multi.')./(cos(Pressure_Angle));
 figure
 plot(tau_multi, force, 'LineWidth', 2)
-xlabel('tau [-]')
-ylabel('resulting force between follower and cam')
+xlabel('tau_multi [-]')
+ylabel('Vibration force')
 axis([0, 1, -inf, inf])
 
 figure
 plot(theta1, normalForce + force)
+xlabel('theta [-]')
+ylabel('Normal force + vibration force between follower and cam')
+min(normalForce + force)
 
 
 

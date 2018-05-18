@@ -11,9 +11,9 @@ clear; close all; clc
 
 %% input
 R0 = 60; %pitch radius in mm
-start_lift = 30; %start lift in mm
-end_lift = 0; %end lift in mm
-cycloidtype = 6; %type of cycloide
+start_lift = 15; %start lift in mm
+end_lift = 30; %end lift in mm
+cycloidtype = 2; %type of cycloide
 
 %% calculations
 beta_vec = 5:200;
