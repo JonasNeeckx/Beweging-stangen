@@ -9,7 +9,7 @@ t1 = ((dwell - rise)*pi)/(180*Omega_rad);
 tau_end = (d_end-rise+360)/(dwell-rise);
 lambda = 0.75/zeta;
 
-kf = Mass*((2*pi*lambda)/(t1))^2 - ks;
+kf = Mass*((2*pi*lambda)/(t1))^2 - ks*10^3;
 
 tau = 0:(tau_end/22000):tau_end;
 
@@ -53,7 +53,7 @@ eps = (A_num-A_approx)/A_num;
 %%% MULTI RISE ANALYSIS %%%%
 
 % define system
-wn = sqrt((ks + kf)/Mass);
+wn = sqrt((ks*10^3 + kf)/Mass);
 tn = (2*pi)/wn;
 lambda_tilde = 2/tn;
 numerator2 = (2*pi*lambda_tilde)^2;
